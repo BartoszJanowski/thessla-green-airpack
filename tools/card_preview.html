@@ -32,17 +32,17 @@ const P = "thessla_green_airpack";
 const DEV = "dev1";
 // entity_id -> [translation_key, state, attributes]
 const BASE = {
-  "sensor.ap_outside": ["outside_temperature", "0.0"],
-  "sensor.ap_supply": ["supply_temperature", "17.3"],
-  "sensor.ap_extract": ["exhaust_temperature", "21.4"],
-  "sensor.ap_ambient": ["ambient_temperature", "17.4"],
-  "sensor.ap_flow_s": ["supply_air_flow", "120"],
-  "sensor.ap_flow_e": ["exhaust_air_flow", "120"],
-  "sensor.ap_pct_s": ["supply_percentage", "30"],
-  "sensor.ap_pct_e": ["exhaust_percentage", "30"],
+  "sensor.ap_outside": ["outside_temperature", "6.1"],
+  "sensor.ap_supply": ["supply_temperature", "18.6"],
+  "sensor.ap_extract": ["exhaust_temperature", "21.6"],
+  "sensor.ap_ambient": ["ambient_temperature", "18.6"],
+  "sensor.ap_flow_s": ["supply_air_flow", "140"],
+  "sensor.ap_flow_e": ["exhaust_air_flow", "140"],
+  "sensor.ap_pct_s": ["supply_percentage", "35"],
+  "sensor.ap_pct_e": ["exhaust_percentage", "35"],
   "sensor.ap_filter_s": ["supply_filter_wear", "8"],
   "sensor.ap_filter_e": ["exhaust_filter_wear", "6"],
-  "sensor.ap_eff": ["heat_recovery_efficiency", "80.8"],
+  "sensor.ap_eff": ["heat_recovery_efficiency", "80.6"],
   "sensor.ap_func": ["active_function", "none"],
   "sensor.ap_bypass_state": ["bypass_state", "inactive"],
   "sensor.ap_comfort_state": ["comfort_state", "inactive"],
@@ -52,14 +52,14 @@ const BASE = {
   "binary_sensor.ap_alarm": ["alarm", "off"],
   "binary_sensor.ap_error": ["error", "off"],
   "binary_sensor.ap_fans": ["power_supply_fans", "on"],
-  "fan.ap": ["ventilation", "on", { percentage: 30, preset_mode: "auto" }],
+  "fan.ap": ["ventilation", "on", { percentage: 35, preset_mode: "auto" }],
   "switch.ap_power": ["power", "on"],
   "select.ap_season": ["season_mode", "winter"],
   "select.ap_comfort": ["comfort_mode_panel", "eco"],
 };
 
 const SCENARIOS = [
-  ["Normal (like the Air++ screen)", {}],
+  ["Your unit at 15:07 (read-only probe)", {}],
   ["Bypass open, summer, free cooling", {
     "binary_sensor.ap_bypass": "on", "sensor.ap_bypass_state": "free_cooling", "select.ap_season": "summer",
     "sensor.ap_outside": "16.0", "sensor.ap_supply": "16.4", "sensor.ap_extract": "24.6", "sensor.ap_eff": "unknown",

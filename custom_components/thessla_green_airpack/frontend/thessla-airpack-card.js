@@ -117,7 +117,8 @@ const SVG = `
   <text id="tOutside" class="temp clickable" x="20" y="95"></text>
   <text id="tExtract" class="temp clickable" x="880" y="95" text-anchor="end"></text>
   <text id="tSupply" class="temp clickable" x="880" y="430" text-anchor="end"></text>
-  <text id="tAmbient" class="temp clickable" x="450" y="430" text-anchor="middle"></text>
+  <!-- register 0x16 (TO): Air++ shows it on the exhaust side, before WYRZUTNIA -->
+  <text id="tAmbient" class="temp clickable" x="175" y="388" text-anchor="middle"></text>
 
   <!-- GWC -->
   <g id="gGwc" class="comp clickable">
