@@ -1,6 +1,6 @@
 {
   "domain": "thessla_green_airpack",
-  "name": "Thessla Green AirPack",
+  "name": "Thessla Green AirPack4",
   "after_dependencies": ["frontend", "http"],
   "codeowners": ["@BartoszJanowski"],
   "config_flow": true,
@@ -10,5 +10,5 @@
   "issue_tracker": "https://github.com/BartoszJanowski/thessla-green-airpack/issues",
   "loggers": ["pymodbus"],
   "requirements": ["pymodbus>=3.11"],
-  "version": "0.1.4"
+  "version": "0.1.5"
 }

@@ -1,4 +1,4 @@
-"""Time entities (HH:MM settings) for Thessla Green AirPack."""
+"""Time entities (HH:MM settings) for Thessla Green AirPack4."""
 
 from __future__ import annotations
 

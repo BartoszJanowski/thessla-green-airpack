@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only probe for Thessla Green AirPack devices over Modbus TCP.
+"""Read-only probe for Thessla Green AirPack4 devices over Modbus TCP.
 
 Dumps every register from the integration's register map (decoded), the
 readable block layout and the list of unsupported addresses. Useful for

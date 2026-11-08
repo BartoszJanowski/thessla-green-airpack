@@ -1,4 +1,4 @@
-"""Switches for Thessla Green AirPack."""
+"""Switches for Thessla Green AirPack4."""
 
 from __future__ import annotations
 

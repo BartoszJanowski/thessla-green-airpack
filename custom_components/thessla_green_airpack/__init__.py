@@ -1,4 +1,4 @@
-"""Thessla Green AirPack integration (Modbus TCP)."""
+"""Thessla Green AirPack4 integration (Modbus TCP)."""
 
 from __future__ import annotations
 

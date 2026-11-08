@@ -1,4 +1,4 @@
-"""Constants for the Thessla Green AirPack integration."""
+"""Constants for the Thessla Green AirPack4 integration."""
 
 from __future__ import annotations
 

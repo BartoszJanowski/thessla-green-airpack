@@ -1,4 +1,4 @@
-"""Number (setting) entities for Thessla Green AirPack."""
+"""Number (setting) entities for Thessla Green AirPack4."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Config flow for Thessla Green AirPack."""
+"""Config flow for Thessla Green AirPack4."""
 
 from __future__ import annotations
 

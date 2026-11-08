@@ -1,6 +1,6 @@
 <img src="assets/icon.svg" width="96" align="right" alt="">
 
-# Thessla Green AirPack for Home Assistant
+# Thessla Green AirPack4 for Home Assistant
 
 A Home Assistant integration for **Thessla Green AirPack4** recuperators (heat-recovery ventilation units). It connects over Modbus through any Modbus TCP → RTU gateway (Elfin EW11/EW10, Waveshare, USR, …).
 
@@ -37,13 +37,13 @@ Optional hardware is detected automatically: GWC, duct heater/cooler, constant f
 
 ### HACS (custom repository)
 1. HACS → ⋮ → *Custom repositories* → add this repository's URL, category **Integration**.
-2. Install **Thessla Green AirPack** and restart Home Assistant.
+2. Install **Thessla Green AirPack4** and restart Home Assistant.
 
 ### Manual
 Copy `custom_components/thessla_green_airpack` to `<config>/custom_components/` and restart Home Assistant.
 
 ### Add the device
-Go to *Settings → Devices & services → Add integration → Thessla Green AirPack*. Enter:
+Go to *Settings → Devices & services → Add integration → Thessla Green AirPack4*. Enter:
 - the gateway's IP address and port
 - the device address (10)
 - your model

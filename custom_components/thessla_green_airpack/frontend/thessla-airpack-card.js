@@ -1,5 +1,5 @@
 /*
- * Thessla Green AirPack – flow diagram card for Home Assistant.
+ * Thessla Green AirPack4 – flow diagram card for Home Assistant.
  *
  * Served and auto-registered by the thessla_green_airpack integration.
  *   type: custom:thessla-airpack-card
@@ -10,7 +10,7 @@
  * does not break the card. Anything the device does not have is hidden.
  */
 
-const CARD_VERSION = "0.1.4";
+const CARD_VERSION = "0.1.5";
 const DOMAIN = "thessla_green_airpack";
 
 const I18N = {
@@ -18,7 +18,7 @@ const I18N = {
     intake: "INTAKE", extract: "EXTRACT", supply: "SUPPLY", exhaust: "EXHAUST",
     bypass: "BYPASS", off: "Off", auto: "Auto", manual: "Manual", temporary: "Temporary",
     summer: "Summer", winter: "Winter", eco: "ECO", comfort: "COMFORT", alarms: "alarm(s)",
-    efficiency: "Efficiency", no_device: "No Thessla Green AirPack found.",
+    efficiency: "Efficiency", no_device: "No Thessla Green AirPack4 found.",
     functions: {
       hood: "Hood", fireplace: "Fireplace", airing_bell_switch: "Airing", airing_switch: "Airing",
       airing_hygrostat: "Airing (H2O)", airing_air_quality: "Airing (air quality)", airing_manual: "Airing",
@@ -30,7 +30,7 @@ const I18N = {
     intake: "CZERPNIA", extract: "WYWIEW", supply: "NAWIEW", exhaust: "WYRZUTNIA",
     bypass: "BYPASS", off: "Wyłączona", auto: "Automatyczny", manual: "Manualny", temporary: "Chwilowy",
     summer: "Lato", winter: "Zima", eco: "EKO", comfort: "KOMFORT", alarms: "alarm(y)",
-    efficiency: "Sprawność", no_device: "Nie znaleziono centrali Thessla Green AirPack.",
+    efficiency: "Sprawność", no_device: "Nie znaleziono centrali Thessla Green AirPack4.",
     functions: {
       hood: "Okap", fireplace: "Kominek", airing_bell_switch: "Wietrzenie", airing_switch: "Wietrzenie",
       airing_hygrostat: "Wietrzenie (H2O)", airing_air_quality: "Wietrzenie (JP)", airing_manual: "Wietrzenie",
@@ -567,7 +567,7 @@ if (!customElements.get("thessla-airpack-card")) {
   window.customCards = window.customCards || [];
   window.customCards.push({
     type: "thessla-airpack-card",
-    name: "Thessla Green AirPack",
+    name: "Thessla Green AirPack4",
     description: "Live air-flow diagram of the AirPack recuperator.",
     preview: true,
     documentationURL: "https://github.com/BartoszJanowski/thessla-green-airpack",

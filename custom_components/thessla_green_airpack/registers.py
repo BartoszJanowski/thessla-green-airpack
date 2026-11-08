@@ -1,4 +1,4 @@
-"""Declarative Modbus register map for Thessla Green AirPack devices.
+"""Declarative Modbus register map for Thessla Green AirPack4 devices.
 
 This module is the single source of truth for register addresses, data types,
 ranges and grouping. It must not import Home Assistant so that the standalone
