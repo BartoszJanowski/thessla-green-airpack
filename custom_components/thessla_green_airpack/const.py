@@ -7,6 +7,12 @@ from typing import Final
 DOMAIN: Final = "thessla_green_airpack"
 MANUFACTURER: Final = "Thessla Green"
 
+# Sidebar panel with the live flow diagram (also opened from the device page).
+PANEL_URL_PATH: Final = "airpack4"
+PANEL_TITLE: Final = "AirPack4"
+PANEL_ICON: Final = "mdi:hvac"
+PANEL_WEBCOMPONENT: Final = "thessla-airpack-panel"
+
 CONF_UNIT_ID: Final = "unit_id"
 CONF_MODEL: Final = "model"
 CONF_SCAN_INTERVAL: Final = "scan_interval"

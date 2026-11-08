@@ -32,6 +32,7 @@ from .const import (
     MANUFACTURER,
     MAX_MERGE_GAP,
     MAX_REGISTERS_PER_READ,
+    PANEL_URL_PATH,
     STORAGE_VERSION,
 )
 from .decode import (
@@ -151,7 +152,8 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             name=self.config_entry.title,
             sw_version=identity.get("firmware"),
             serial_number=identity.get("serial"),
-            configuration_url=f"http://{self.config_entry.data[CONF_HOST]}",
+            # "Open configuration page" on the device page opens the flow diagram panel.
+            configuration_url=f"homeassistant://{PANEL_URL_PATH}",
         )
 
     def reg(self, key: str) -> Reg:

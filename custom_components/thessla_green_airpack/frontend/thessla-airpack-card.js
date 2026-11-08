@@ -10,7 +10,7 @@
  * does not break the card. Anything the device does not have is hidden.
  */
 
-const CARD_VERSION = "0.1.5";
+const CARD_VERSION = "0.1.6";
 const DOMAIN = "thessla_green_airpack";
 
 const I18N = {
@@ -559,6 +559,84 @@ class ThesslaAirPackCardEditor extends HTMLElement {
       { name: "title", selector: { text: {} } },
     ];
   }
+}
+
+/*
+ * Sidebar panel ("AirPack4", /airpack4): the same diagram full-page, one per
+ * AirPack. Registered by the integration; the device page's
+ * "Open configuration page" button links here.
+ */
+class ThesslaAirPackPanel extends HTMLElement {
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  set narrow(narrow) {
+    this._narrow = narrow;
+    if (this._menu) this._menu.narrow = narrow;
+  }
+
+  set panel(panel) {
+    this._panel = panel;
+  }
+
+  set route(route) {
+    this._route = route;
+  }
+
+  _render() {
+    if (!this._hass) return;
+    if (!this.shadowRoot) {
+      this.attachShadow({ mode: "open" });
+      this.shadowRoot.innerHTML = `
+        <style>
+          :host { display: block; min-height: 100vh; background: var(--primary-background-color); }
+          .toolbar { display: flex; align-items: center; gap: 4px; height: var(--header-height, 56px);
+                     padding: 0 12px; box-sizing: border-box; color: var(--app-header-text-color, var(--primary-text-color));
+                     background: var(--app-header-background-color, var(--primary-background-color));
+                     border-bottom: var(--app-header-border-bottom, none); }
+          .title { font-size: 20px; font-weight: 400; margin-left: 4px; }
+          .content { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+          .empty { padding: 32px 16px; color: var(--secondary-text-color); text-align: center; }
+        </style>
+        <div class="toolbar"><ha-menu-button></ha-menu-button><div class="title">AirPack4</div></div>
+        <div class="content" id="content"></div>`;
+      this._menu = this.shadowRoot.querySelector("ha-menu-button");
+      this._content = this.shadowRoot.getElementById("content");
+      this._cards = new Map();
+    }
+    this._menu.hass = this._hass;
+    this._menu.narrow = this._narrow;
+
+    const devices = findDevices(this._hass);
+    for (const [id, card] of this._cards) {
+      if (!devices.includes(id)) {
+        card.remove();
+        this._cards.delete(id);
+      }
+    }
+    for (const id of devices) {
+      let card = this._cards.get(id);
+      if (!card) {
+        card = document.createElement("thessla-airpack-card");
+        card.setConfig({ device_id: id });
+        this._cards.set(id, card);
+        this._content.appendChild(card);
+      }
+      card.hass = this._hass;
+    }
+    if (!devices.length) {
+      const lang = (this._hass.locale?.language || this._hass.language || "en").slice(0, 2);
+      this._content.innerHTML = `<div class="empty">${(I18N[lang] || I18N.en).no_device}</div>`;
+    } else {
+      this._content.querySelector(".empty")?.remove();
+    }
+  }
+}
+
+if (!customElements.get("thessla-airpack-panel")) {
+  customElements.define("thessla-airpack-panel", ThesslaAirPackPanel);
 }
 
 if (!customElements.get("thessla-airpack-card")) {

@@ -10,7 +10,7 @@ A Home Assistant integration for **Thessla Green AirPack4** recuperators (heat-r
   - Missing registers (e.g. ERV on units without it) are skipped instead of failing the whole update.
   - Sensors that aren't fitted are hidden.
   - A value the unit can't read right now shows *Unknown*.
-- **Dashboard card:** a live air-flow diagram similar to the Air++ unit screen. It is registered automatically.
+- **Flow diagram:** a live air-flow diagram similar to the Air++ unit screen. It is available as a sidebar panel (opened from the device page) and as a dashboard card.
 - English and Polish.
 
 ## Supported devices
@@ -70,6 +70,10 @@ Go to *Settings → Devices & services → Add integration → Thessla Green Air
 Some things are deliberately **not** exposed:
 - Weekly schedules (planned).
 - Settings that could lock you out or require service access: Modbus port settings, factory reset, product key, calibration.
+
+## Flow diagram panel
+
+The integration adds an **AirPack4** panel to the sidebar with a live, full-page flow diagram. You don't need to edit any dashboard. The **Open configuration page** button on the device page also opens it. To hide the panel from the sidebar, long-press the sidebar title and hide **AirPack4**.
 
 ## Dashboard card
 

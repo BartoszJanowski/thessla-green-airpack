@@ -344,3 +344,30 @@ async def test_special_functions_option(hass: HomeAssistant, fake) -> None:
     await _refresh(hass, entry)
     assert hass.states.get(eid).state == STATE_UNKNOWN
     assert _state(hass, "sensor", "active_function").state == "hood"
+
+
+async def test_sidebar_panel_and_device_link(hass: HomeAssistant, fake) -> None:
+    """The flow diagram panel is registered and linked from the device page."""
+    from unittest.mock import AsyncMock, patch
+
+    from homeassistant.helpers import device_registry as dr
+
+    hass.config.components.add("frontend")
+    with (
+        patch(
+            "homeassistant.components.panel_custom.async_register_panel", new=AsyncMock()
+        ) as register,
+        patch("homeassistant.components.frontend.async_remove_panel") as remove,
+    ):
+        entry = await setup_entry(hass)
+        register.assert_awaited_once()
+        kwargs = register.await_args.kwargs
+        assert kwargs["frontend_url_path"] == "airpack4"
+        assert kwargs["webcomponent_name"] == "thessla-airpack-panel"
+        assert kwargs["module_url"].startswith("/thessla_green_airpack/thessla-airpack-card.js?v=")
+
+        device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, entry.unique_id)})
+        assert device.configuration_url == "homeassistant://airpack4"
+
+        assert await hass.config_entries.async_unload(entry.entry_id)
+        remove.assert_called_once()
