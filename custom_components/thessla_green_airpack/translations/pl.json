@@ -364,6 +364,9 @@
       },
       "gwc_enabled": {
         "name": "GWC aktywny"
+      },
+      "open_window_coef_auto": {
+        "name": "OTWARTE OKNA – intensywność wywiewu z trybu pracy (AUTO)"
       }
     },
     "number": {

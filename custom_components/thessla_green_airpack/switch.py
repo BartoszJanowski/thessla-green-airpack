@@ -16,9 +16,15 @@ from .entity import AirPackEntity, AirPackEntityDescription, supported_descripti
 
 @dataclass(frozen=True, kw_only=True)
 class AirPackSwitchDescription(AirPackEntityDescription, SwitchEntityDescription):
-    """Switch description; ``inverted`` registers store 0 = enabled."""
+    """Switch description; ``inverted`` registers store 0 = enabled.
+
+    ``on_value`` / ``off_value``: on is that exact register value, turning off
+    writes ``off_value`` (for registers with a special "auto" value).
+    """
 
     inverted: bool = False
+    on_value: int | None = None
+    off_value: int | None = None
 
 
 SWITCHES: tuple[AirPackSwitchDescription, ...] = (
@@ -30,6 +36,12 @@ SWITCHES: tuple[AirPackSwitchDescription, ...] = (
     ),
     AirPackSwitchDescription(
         key="gwc_enabled", register="gwc_off", inverted=True,
+        entity_category=EntityCategory.CONFIG,
+    ),
+    # Open windows exhaust intensity "AUTO" (101 = from the active mode); off -> 100 %,
+    # the first value below AUTO on the Air++ panel.
+    AirPackSwitchDescription(
+        key="open_window_coef_auto", register="open_window_coef", on_value=101, off_value=100,
         entity_category=EntityCategory.CONFIG,
     ),
 )
@@ -55,15 +67,22 @@ class AirPackSwitch(AirPackEntity, SwitchEntity):
     @property
     def is_on(self) -> bool | None:
         """State."""
-        value = self.value
+        value = self.reg_value
         if value is None:
             return None
+        if self.entity_description.on_value is not None:
+            return value == self.entity_description.on_value
         return bool(value) != self.entity_description.inverted
 
     async def _set(self, on: bool) -> None:
-        await self.coordinator.async_write(
-            self.entity_description.reg_key, int(on != self.entity_description.inverted)
-        )
+        description = self.entity_description
+        if description.on_value is not None:
+            raw = description.on_value if on else description.off_value
+            if not on and self.reg_value != description.on_value:
+                return  # already a custom intensity: keep it
+        else:
+            raw = int(on != description.inverted)
+        await self.coordinator.async_write(description.reg_key, raw)
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on."""

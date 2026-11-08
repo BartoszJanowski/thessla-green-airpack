@@ -255,6 +255,7 @@ AIRPACK4_REGISTERS: tuple[Reg, ...] = (
     Reg("airing_switch_mode_off_delay", H, 0x108C, writable=True, min=0, max=20),
     Reg("fireplace_mode_time", H, 0x108D, writable=True, min=1, max=10),
     Reg("airing_switch_coef", H, 0x108E, writable=True, min=100, max=150),
+    # 10-100 %, 101 = take the intensity from the active AUTO / MANUAL mode (fw 4.72+)
     Reg("open_window_coef", H, 0x108F, writable=True, min=10, max=101),
     Reg("gwc_off", H, 0x10A0, writable=True, min=0, max=1, feature=Feature.GWC),
     Reg("min_gwc_air_temperature", H, 0x10A1, DType.HALF, writable=True, min=0, max=10, feature=Feature.GWC),

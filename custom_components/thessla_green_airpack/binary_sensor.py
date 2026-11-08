@@ -95,5 +95,5 @@ class AirPackBinarySensor(AirPackEntity, BinarySensorEntity):
     @property
     def is_on(self) -> bool | None:
         """State."""
-        value = self.value
+        value = self.reg_value
         return None if value is None else bool(value)

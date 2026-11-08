@@ -68,7 +68,7 @@ class AirPackFan(AirPackEntity, FanEntity):
     @property
     def preset_mode(self) -> str | None:
         """AUTO / MANUAL / TEMPORARY."""
-        return PRESETS.get(self.value)
+        return PRESETS.get(self.reg_value)
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

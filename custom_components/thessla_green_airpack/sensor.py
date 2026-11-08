@@ -235,7 +235,7 @@ class AirPackSensor(AirPackEntity, SensorEntity):
     @property
     def native_value(self) -> Any:
         """Current value."""
-        value = self.value
+        value = self.reg_value
         if value is None:
             return None
         if self.entity_description.value_fn:
@@ -246,7 +246,7 @@ class AirPackSensor(AirPackEntity, SensorEntity):
     def extra_state_attributes(self) -> dict[str, Any] | None:
         """Extra attributes."""
         if self.entity_description.attrs_fn:
-            return self.entity_description.attrs_fn(self.value)
+            return self.entity_description.attrs_fn(self.reg_value)
         return None
 
     @property

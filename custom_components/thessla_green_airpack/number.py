@@ -20,7 +20,14 @@ from .entity import AirPackEntity, AirPackEntityDescription, supported_descripti
 
 @dataclass(frozen=True, kw_only=True)
 class AirPackNumberDescription(AirPackEntityDescription, NumberEntityDescription):
-    """Number description; min/max default to the register range."""
+    """Number description; min/max default to the register range.
+
+    ``special_value`` is a register value with a non-numeric meaning (shown as
+    unknown, handled by a separate switch); ``max_value`` then caps the range.
+    """
+
+    special_value: int | None = None
+    max_value: float | None = None
 
 
 CONFIG = EntityCategory.CONFIG
@@ -68,7 +75,8 @@ NUMBERS: tuple[AirPackNumberDescription, ...] = (
     _pct("contamination_coef"),
     _pct("empty_house_coef"),
     _pct("airing_switch_coef"),
-    _pct("open_window_coef"),
+    # 101 = "AUTO" on the Air++ panel -> separate switch (switch.py).
+    _pct("open_window_coef", special_value=101, max_value=100),
     _minutes("airing_panel_mode_time"),
     _minutes("airing_switch_mode_time"),
     _minutes("airing_switch_mode_on_delay"),
@@ -112,11 +120,16 @@ class AirPackNumber(AirPackEntity, NumberEntity):
         reg = coordinator.reg(description.reg_key)
         self._attr_native_min_value = float(reg.min if reg.min is not None else 0)
         self._attr_native_max_value = float(reg.max if reg.max is not None else 65535)
+        if description.max_value is not None:
+            self._attr_native_max_value = float(description.max_value)
 
     @property
     def native_value(self) -> float | None:
-        """Current value."""
-        return self.value
+        """Current value (unknown while the register holds its special value)."""
+        value = self.reg_value
+        if value is not None and value == self.entity_description.special_value:
+            return None
+        return value
 
     async def async_set_native_value(self, value: float) -> None:
         """Write a new value."""

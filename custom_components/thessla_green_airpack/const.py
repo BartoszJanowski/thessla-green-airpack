@@ -46,7 +46,7 @@ FUNCTION_ENTITIES: Final[dict[str, tuple[str, ...]]] = {
     "hood": ("hood_supply_coef", "hood_exhaust_coef"),
     "fireplace": ("fireplace_supply_coef", "fireplace_mode_time"),
     "airing": ("airing_coef", "airing_panel_mode_time", "manual_airing_time_to_start"),
-    "open_windows": ("open_window_coef",),
+    "open_windows": ("open_window_coef", "open_window_coef_auto"),
     "empty_house": ("empty_house_coef",),
 }
 

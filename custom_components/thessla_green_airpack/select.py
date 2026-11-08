@@ -87,7 +87,7 @@ class AirPackSelect(AirPackEntity, SelectEntity):
     @property
     def current_option(self) -> str | None:
         """Current option (None if the device reports a value not selectable here)."""
-        return self.entity_description.mapping.get(self.value)
+        return self.entity_description.mapping.get(self.reg_value)
 
     async def async_select_option(self, option: str) -> None:
         """Write the selected option."""

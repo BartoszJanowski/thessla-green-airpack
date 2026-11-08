@@ -364,6 +364,9 @@
       },
       "gwc_enabled": {
         "name": "GWC enabled"
+      },
+      "open_window_coef_auto": {
+        "name": "Open windows exhaust intensity from operating mode (AUTO)"
       }
     },
     "number": {

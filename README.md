@@ -131,7 +131,7 @@ What each item hides when it is unticked:
 | *Hood* (special function) | hood supply and exhaust intensity | ticked |
 | *Fireplace* (special function) | fireplace airflow unbalance and duration | ticked |
 | *Airing* (special function) | room airing intensity and duration, manual-mode airing start | ticked |
-| *Open windows* (special function) | open windows exhaust intensity | ticked |
+| *Open windows* (special function) | open windows exhaust intensity and its AUTO switch | ticked |
 | *Empty house* (special function) | empty house intensity | ticked |
 | **GWC** | GWC switch, regeneration, thresholds, times, state, temperature, relay | ticked when the GWC sensor (TZ3) is detected |
 | **Duct heater / cooler (ECO / COMFORT)** | ECO / COMFORT, COMFORT state, COMFORT target temperature, duct supply temperature (TN2), manual and temporary supply temperature | ticked when the TN2 sensor is detected |
@@ -171,7 +171,7 @@ Other controls:
 Under **Configuration** (device page):
 - per-mode airflow and supply temperature. The *Temporary* ones are hidden by default because the Ventilation entity handles them. Supply temperatures are kept only in COMFORT, so they are shown only with duct exchangers.
 - bypass and GWC on/off and their parameters,
-- special-function intensities and durations,
+- special-function intensities and durations. *Open windows exhaust intensity* can be **AUTO** (as on the Air++ panel): the intensity then comes from the active Automatic / Manual mode and the number shows *Unknown*. Use the *… from operating mode (AUTO)* switch to turn AUTO on; setting a number turns it off.
 - AirS gears and accessory settings (when ticked in Options),
 - filter replacement buttons: press after replacing a filter (units without AFC).
 
@@ -394,7 +394,7 @@ Co ukrywa każda odznaczona pozycja:
 | *Okap* (funkcja specjalna) | OKAP – intensywność nawiewu i wywiewu | zaznaczona |
 | *Kominek* (funkcja specjalna) | KOMINEK – różnicowanie strumieni i czas | zaznaczona |
 | *Wietrzenie* (funkcja specjalna) | WIETRZENIE (pokoje) – intensywność i czas, start wietrzenia w trybie manualnym | zaznaczona |
-| *Otwarte okna* (funkcja specjalna) | OTWARTE OKNA – intensywność wywiewu | zaznaczona |
+| *Otwarte okna* (funkcja specjalna) | OTWARTE OKNA – intensywność wywiewu i jej przełącznik AUTO | zaznaczona |
 | *Pusty dom* (funkcja specjalna) | PUSTY DOM – intensywność | zaznaczona |
 | **GWC** | GWC aktywny, regeneracja, progi, godziny, stan, temperatura, przekaźnik | zaznaczona, gdy wykryto czujnik GWC (TZ3) |
 | **Wymienniki kanałowe (EKO / KOMFORT)** | EKO / KOMFORT, stan trybu KOMFORT, temperatura zadana KOMFORT, temperatura za nagrzewnicą kanałową (TN2), temperatura nawiewu w trybie manualnym i chwilowym | zaznaczona, gdy wykryto czujnik TN2 |
@@ -434,7 +434,7 @@ Pozostałe kontrolki:
 W sekcji **Konfiguracja** (strona urządzenia):
 - intensywność i temperatura nawiewu dla trybów. Nastawy trybu *chwilowego* są domyślnie ukryte, bo obsługuje je encja Wentylacja. Temperatura nawiewu jest utrzymywana tylko w trybie KOMFORT, więc widać ją tylko przy wymiennikach kanałowych.
 - włączanie bypassu i GWC oraz ich parametry,
-- intensywności i czasy funkcji specjalnych,
+- intensywności i czasy funkcji specjalnych. *OTWARTE OKNA – intensywność wywiewu* może mieć wartość **AUTO** (jak w Air++): intensywność jest wtedy brana z aktywnego trybu automatycznego / manualnego, a pole liczbowe pokazuje *Nieznany*. AUTO włącza przełącznik *… z trybu pracy (AUTO)*; ustawienie liczby je wyłącza.
 - biegi AirS i ustawienia akcesoriów (gdy są zaznaczone w Opcjach),
 - przyciski wymiany filtrów: naciśnij po wymianie filtra (centrale bez AFC).
 

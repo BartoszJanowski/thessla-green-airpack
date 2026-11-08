@@ -79,6 +79,6 @@ class AirPackEntity(CoordinatorEntity[AirPackCoordinator]):
         )
 
     @property
-    def value(self) -> Any:
+    def reg_value(self) -> Any:
         """Decoded value (None = unknown)."""
         return (self.coordinator.data or {}).get(self.entity_description.reg_key)

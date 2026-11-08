@@ -375,3 +375,46 @@ async def test_sidebar_panel_and_device_link(hass: HomeAssistant, fake) -> None:
 
         assert await hass.config_entries.async_unload(entry.entry_id)
         remove.assert_called_once()
+
+
+async def test_open_windows_intensity_auto(hass: HomeAssistant, fake) -> None:
+    """0x108F = 101 means AUTO (intensity from the active mode), not 101 %."""
+    fake.bank[Table.HOLDING][0x108F] = 101
+    entry = await setup_entry(hass)
+    number = entity_id(hass, "number", "open_window_coef")
+    switch = entity_id(hass, "switch", "open_window_coef_auto")
+    assert hass.states.get(number).state == STATE_UNKNOWN
+    assert hass.states.get(number).attributes["max"] == 100
+    assert hass.states.get(switch).state == "on"
+
+    # Setting an intensity leaves AUTO, like lowering it on the Air++ panel.
+    await hass.services.async_call(
+        "number", "set_value", {"entity_id": number, "value": 80}, blocking=True
+    )
+    assert fake.writes[-1] == (0x108F, [80])
+    await _refresh(hass, entry)
+    assert hass.states.get(number).state == "80"
+    assert hass.states.get(switch).state == "off"
+
+    # Turning off again keeps the custom value; turning on writes AUTO.
+    await hass.services.async_call("switch", "turn_off", {"entity_id": switch}, blocking=True)
+    assert fake.writes[-1] == (0x108F, [80])
+    await hass.services.async_call("switch", "turn_on", {"entity_id": switch}, blocking=True)
+    assert fake.writes[-1] == (0x108F, [101])
+    await _refresh(hass, entry)
+    assert hass.states.get(number).state == STATE_UNKNOWN
+
+    # Leaving AUTO with the switch starts at 100 %.
+    await hass.services.async_call("switch", "turn_off", {"entity_id": switch}, blocking=True)
+    assert fake.writes[-1] == (0x108F, [100])
+
+
+async def test_number_temperatures_follow_unit_system(hass: HomeAssistant, fake) -> None:
+    """Number state goes through Home Assistant's unit conversion (°C -> °F)."""
+    from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
+
+    hass.config.units = US_CUSTOMARY_SYSTEM
+    await setup_entry(hass)
+    state = hass.states.get(entity_id(hass, "number", "min_bypass_temperature"))
+    assert state.attributes["unit_of_measurement"] == "°F"
+    assert float(state.state) == pytest.approx(52.7, abs=0.1)  # 11.5 °C

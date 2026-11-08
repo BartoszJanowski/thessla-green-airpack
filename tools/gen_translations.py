@@ -84,6 +84,7 @@ N = {
   "power": ("Power", "Zasilanie"),
   "bypass_enabled": ("Bypass enabled", "Bypass aktywny"),
   "gwc_enabled": ("GWC enabled", "GWC aktywny"),
+  "open_window_coef_auto": ("Open windows exhaust intensity from operating mode (AUTO)", "OTWARTE OKNA – intensywność wywiewu z trybu pracy (AUTO)"),
  },
  "number": {
   "air_flow_rate_manual": ("Manual airflow", "Intensywność – tryb manualny"),

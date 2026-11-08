@@ -51,7 +51,7 @@ class AirPackTime(AirPackEntity, TimeEntity):
     @property
     def native_value(self) -> time | None:
         """Current value."""
-        return self.value
+        return self.reg_value
 
     async def async_set_value(self, value: time) -> None:
         """Write a new time."""
