@@ -54,11 +54,15 @@ All AirPack4 variants covered by the manufacturer's `MODBUS_USER_AirPack_4` regi
 
 ### 2. Install
 
-**HACS (recommended):**
-1. HACS → **⋮** (top right) → **Custom repositories**.
+**Home Assistant 2026.11 and newer: Marketplace.** HACS is now built into Home Assistant as the *Marketplace*.
+1. *Settings → Marketplace* → **⋮** (top right) → **Custom repositories**.
 2. Repository: `https://github.com/BartoszJanowski/thessla-green-airpack`, type **Integration** → **Add**.
 3. Search for **Thessla Green AirPack4** → **Download**.
 4. Restart Home Assistant: *Settings → System → ⋮ → Restart*.
+
+**Home Assistant 2026.10 and older: HACS.** The same steps, starting from **HACS → ⋮ → Custom repositories**.
+
+If you upgrade Home Assistant to 2026.11, an installation made through HACS is taken over by the Marketplace automatically.
 
 **Manual:** copy `custom_components/thessla_green_airpack` to `<config>/custom_components/`, then restart Home Assistant.
 
@@ -145,8 +149,9 @@ What the diagram shows:
 
 ### 7. Updating
 
-- HACS → *Thessla Green AirPack4* → **Update**.
-- If no update is shown: **⋮ → Update information**, then **⋮ → Redownload**.
+New versions are published as [GitHub releases](https://github.com/BartoszJanowski/thessla-green-airpack/releases). Home Assistant shows them as an update, with the release notes.
+- *Settings → Updates*, or *Marketplace / HACS → Thessla Green AirPack4*, → **Update**.
+- To check for a new version right away: **⋮ → Update information**.
 - Restart Home Assistant, then hard-refresh the browser (Ctrl+F5 / Cmd+Shift+R).
 
 ### 8. Troubleshooting
@@ -237,11 +242,15 @@ Wszystkie odmiany AirPack4 z mapy rejestrów producenta `MODBUS_USER_AirPack_4`:
 
 ### 2. Instalacja
 
-**HACS (zalecane):**
-1. HACS → **⋮** (prawy górny róg) → **Niestandardowe repozytoria** (Custom repositories).
+**Home Assistant 2026.11 i nowszy: Marketplace.** HACS jest teraz wbudowany w Home Assistanta jako *Marketplace*.
+1. *Ustawienia → Marketplace* → **⋮** (prawy górny róg) → **Niestandardowe repozytoria** (Custom repositories).
 2. Repozytorium: `https://github.com/BartoszJanowski/thessla-green-airpack`, typ **Integracja** → **Dodaj**.
 3. Wyszukaj **Thessla Green AirPack4** → **Pobierz**.
 4. Uruchom ponownie Home Assistanta: *Ustawienia → System → ⋮ → Uruchom ponownie*.
+
+**Home Assistant 2026.10 i starszy: HACS.** Te same kroki, zaczynając od **HACS → ⋮ → Niestandardowe repozytoria**.
+
+Po aktualizacji Home Assistanta do 2026.11 instalację z HACS automatycznie przejmuje Marketplace.
 
 **Ręcznie:** skopiuj `custom_components/thessla_green_airpack` do `<config>/custom_components/`, potem uruchom ponownie Home Assistanta.
 
@@ -328,8 +337,9 @@ Co pokazuje schemat:
 
 ### 7. Aktualizacja
 
-- HACS → *Thessla Green AirPack4* → **Aktualizuj**.
-- Jeśli aktualizacji nie widać: **⋮ → Aktualizuj informacje**, potem **⋮ → Pobierz ponownie**.
+Nowe wersje są publikowane jako [wydania na GitHubie](https://github.com/BartoszJanowski/thessla-green-airpack/releases). Home Assistant pokazuje je jako aktualizację, razem z listą zmian.
+- *Ustawienia → Aktualizacje* albo *Marketplace / HACS → Thessla Green AirPack4* → **Aktualizuj**.
+- Żeby od razu sprawdzić nową wersję: **⋮ → Aktualizuj informacje**.
 - Uruchom ponownie Home Assistanta, potem zrób twarde odświeżenie przeglądarki (Ctrl+F5 / Cmd+Shift+R).
 
 ### 8. Rozwiązywanie problemów
