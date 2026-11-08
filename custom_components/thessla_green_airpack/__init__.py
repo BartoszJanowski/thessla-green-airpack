@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, entity_registry as er
 from homeassistant.helpers.typing import ConfigType
 
 from .client import AirPackClient
@@ -38,6 +38,25 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Register the dashboard card once."""
     await async_register_card(hass)
+    return True
+
+
+# Entities that became "disabled by default" after first release (minor version 2).
+HIDDEN_IN_V1_2 = ("air_flow_rate_temporary", "supply_air_temperature_temporary")
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> bool:
+    """Migrate older config entries."""
+    if entry.version > 1:
+        return False
+    if entry.minor_version < 2:
+        registry = er.async_get(hass)
+        prefix = entry.unique_id or entry.entry_id
+        for key in HIDDEN_IN_V1_2:
+            entity_id = registry.async_get_entity_id("number", DOMAIN, f"{prefix}_{key}")
+            if entity_id and (reg_entry := registry.async_get(entity_id)) and reg_entry.disabled_by is None:
+                registry.async_update_entity(entity_id, disabled_by=er.RegistryEntryDisabler.INTEGRATION)
+        hass.config_entries.async_update_entry(entry, minor_version=2)
     return True
 
 

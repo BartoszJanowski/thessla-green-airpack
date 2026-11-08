@@ -277,3 +277,39 @@ async def test_unload(hass: HomeAssistant, fake) -> None:
     assert await hass.config_entries.async_unload(entry.entry_id)
     assert entry.state is ConfigEntryState.NOT_LOADED
     assert DOMAIN not in {e.domain for e in hass.config_entries.async_loaded_entries(DOMAIN)}
+
+
+async def test_entity_categories(hass: HomeAssistant, fake) -> None:
+    """Controls = what the Air++ home screen has; settings live under Configuration."""
+    await setup_entry(hass)
+    registry = er.async_get(hass)
+    for platform, key in (
+        ("number", "air_flow_rate_manual"),
+        ("number", "supply_air_temperature_manual"),
+        ("switch", "bypass_enabled"),
+    ):
+        assert registry.async_get(entity_id(hass, platform, key)).entity_category == "config"
+    for key in ("air_flow_rate_temporary", "supply_air_temperature_temporary"):
+        reg = registry.async_get(entity_id(hass, "number", key))
+        assert reg.entity_category == "config"
+        assert reg.disabled_by is er.RegistryEntryDisabler.INTEGRATION
+    for platform, key in (("fan", "ventilation"), ("switch", "power"), ("select", "season_mode")):
+        assert registry.async_get(entity_id(hass, platform, key)).entity_category is None
+
+
+async def test_migration_hides_temporary_settings(hass: HomeAssistant, fake) -> None:
+    """Existing installs (minor version 1) get the Temporary settings hidden once."""
+    from .conftest import SERIAL, make_entry
+
+    entry = make_entry()
+    entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(entry, minor_version=1)
+    registry = er.async_get(hass)
+    existing = registry.async_get_or_create(
+        "number", DOMAIN, f"{SERIAL}_supply_air_temperature_temporary", config_entry=entry
+    )
+    assert existing.disabled_by is None
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    assert registry.async_get(existing.entity_id).disabled_by is er.RegistryEntryDisabler.INTEGRATION
+    assert entry.minor_version == 2

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
@@ -22,8 +23,15 @@ class AirPackSwitchDescription(AirPackEntityDescription, SwitchEntityDescription
 
 SWITCHES: tuple[AirPackSwitchDescription, ...] = (
     AirPackSwitchDescription(key="power", register="on_off_panel_mode"),
-    AirPackSwitchDescription(key="bypass_enabled", register="bypass_off", inverted=True),
-    AirPackSwitchDescription(key="gwc_enabled", register="gwc_off", inverted=True),
+    # Enabling/disabling a function is a setting, not an everyday control.
+    AirPackSwitchDescription(
+        key="bypass_enabled", register="bypass_off", inverted=True,
+        entity_category=EntityCategory.CONFIG,
+    ),
+    AirPackSwitchDescription(
+        key="gwc_enabled", register="gwc_off", inverted=True,
+        entity_category=EntityCategory.CONFIG,
+    ),
 )
 
 

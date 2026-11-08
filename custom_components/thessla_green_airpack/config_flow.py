@@ -125,6 +125,7 @@ class AirPackConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow."""
 
     VERSION = 1
+    MINOR_VERSION = 2
 
     async def _validate(self, user_input: dict[str, Any], errors: dict[str, str]) -> str | None:
         try:

@@ -26,18 +26,19 @@ class AirPackNumberDescription(AirPackEntityDescription, NumberEntityDescription
 CONFIG = EntityCategory.CONFIG
 
 
-def _pct(key: str, config: bool = True, **kw) -> AirPackNumberDescription:
+def _pct(key: str, **kw) -> AirPackNumberDescription:
     return AirPackNumberDescription(
         key=key, native_unit_of_measurement=PERCENTAGE, native_step=1,
-        mode=NumberMode.BOX, entity_category=CONFIG if config else None, **kw,
+        mode=NumberMode.BOX, entity_category=CONFIG, **kw,
     )
 
 
-def _temp(key: str, config: bool = True) -> AirPackNumberDescription:
+def _temp(key: str, enabled: bool = True) -> AirPackNumberDescription:
     return AirPackNumberDescription(
         key=key, device_class=NumberDeviceClass.TEMPERATURE,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS, native_step=0.5,
-        mode=NumberMode.BOX, entity_category=CONFIG if config else None,
+        mode=NumberMode.BOX, entity_category=CONFIG,
+        entity_registry_enabled_default=enabled,
     )
 
 
@@ -50,16 +51,12 @@ def _minutes(key: str) -> AirPackNumberDescription:
 
 
 NUMBERS: tuple[AirPackNumberDescription, ...] = (
-    AirPackNumberDescription(
-        key="air_flow_rate_manual", native_unit_of_measurement=PERCENTAGE, native_step=1,
-        mode=NumberMode.SLIDER,
-    ),
-    AirPackNumberDescription(
-        key="air_flow_rate_temporary", native_unit_of_measurement=PERCENTAGE, native_step=1,
-        mode=NumberMode.SLIDER,
-    ),
-    _temp("supply_air_temperature_manual", config=False),
-    _temp("supply_air_temperature_temporary", config=False),
+    # Everyday airflow control is the Ventilation fan entity; these are the
+    # stored per-mode settings, so they live under Configuration.
+    _pct("air_flow_rate_manual"),
+    _pct("air_flow_rate_temporary", entity_registry_enabled_default=False),
+    _temp("supply_air_temperature_manual"),
+    _temp("supply_air_temperature_temporary", enabled=False),
     _pct("fan_speed_1_coef"),
     _pct("fan_speed_2_coef"),
     _pct("fan_speed_3_coef"),
