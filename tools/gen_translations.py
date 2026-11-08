@@ -10,14 +10,14 @@ out = Path(__file__).resolve().parent.parent / "custom_components" / "thessla_gr
 # (en, pl)
 N = {
  "sensor": {
-  "outside_temperature": ("Outside air temperature", "Temperatura czerpni"),
-  "supply_temperature": ("Supply air temperature", "Temperatura nawiewu"),
-  "exhaust_temperature": ("Extract air temperature", "Temperatura wywiewu"),
-  "fpx_temperature": ("FPX temperature", "Temperatura za FPX"),
-  "duct_supply_temperature": ("Duct supply temperature", "Temperatura nawiewu za nagrzewnicą kanałową"),
-  "gwc_temperature": ("GWC temperature", "Temperatura GWC"),
-  "ambient_temperature": ("Ambient temperature", "Temperatura otoczenia"),
-  "required_temperature": ("Comfort target temperature", "Temperatura zadana KOMFORT"),
+  "outside_temperature": ("Temperature – intake (outside)", "Temperatura czerpni"),
+  "supply_temperature": ("Temperature – supply", "Temperatura nawiewu"),
+  "exhaust_temperature": ("Temperature – extract", "Temperatura wywiewu"),
+  "fpx_temperature": ("Temperature – after FPX", "Temperatura za FPX"),
+  "duct_supply_temperature": ("Temperature – duct supply", "Temperatura nawiewu za nagrzewnicą kanałową"),
+  "gwc_temperature": ("Temperature – GWC", "Temperatura GWC"),
+  "ambient_temperature": ("Temperature – ambient", "Temperatura otoczenia"),
+  "required_temperature": ("Temperature – comfort target", "Temperatura zadana KOMFORT"),
   "supply_air_flow": ("Supply airflow", "Strumień nawiewu"),
   "exhaust_air_flow": ("Exhaust airflow", "Strumień wywiewu"),
   "supply_flowrate": ("Target supply airflow", "Zadany strumień nawiewu"),

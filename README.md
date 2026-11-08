@@ -92,6 +92,7 @@ Temperatures, airflow, fan intensity and filter wear appear along those paths. W
   - Check the gateway serial settings (9600 8N1).
   - Make sure the gateway is in Modbus TCP→RTU mode.
 - **Slow or unreliable Wi-Fi gateway:** increase *Delay between requests* (e.g. 50–100 ms) and the timeout. Don't connect two Modbus clients to the same gateway at once.
+- **Entity names are in English although the UI is in Polish:** entity names follow the *system* language (*Settings → System → General → Language*), not the per-user profile language. Set it to Polski and restart.
 - **Which registers does my unit have?** Download *Diagnostics* from the device page, or run the read-only probe:
 
   ```bash

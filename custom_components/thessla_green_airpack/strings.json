@@ -57,28 +57,28 @@
   "entity": {
     "sensor": {
       "outside_temperature": {
-        "name": "Outside air temperature"
+        "name": "Temperature – intake (outside)"
       },
       "supply_temperature": {
-        "name": "Supply air temperature"
+        "name": "Temperature – supply"
       },
       "exhaust_temperature": {
-        "name": "Extract air temperature"
+        "name": "Temperature – extract"
       },
       "fpx_temperature": {
-        "name": "FPX temperature"
+        "name": "Temperature – after FPX"
       },
       "duct_supply_temperature": {
-        "name": "Duct supply temperature"
+        "name": "Temperature – duct supply"
       },
       "gwc_temperature": {
-        "name": "GWC temperature"
+        "name": "Temperature – GWC"
       },
       "ambient_temperature": {
-        "name": "Ambient temperature"
+        "name": "Temperature – ambient"
       },
       "required_temperature": {
-        "name": "Comfort target temperature"
+        "name": "Temperature – comfort target"
       },
       "supply_air_flow": {
         "name": "Supply airflow"
