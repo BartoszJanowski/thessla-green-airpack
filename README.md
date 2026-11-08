@@ -1,3 +1,5 @@
+<img src="assets/icon.svg" width="96" align="right" alt="">
+
 # Thessla Green AirPack for Home Assistant
 
 A Home Assistant integration for **Thessla Green AirPack4** recuperators (heat-recovery ventilation units). It connects over Modbus through any Modbus TCP → RTU gateway (Elfin EW11/EW10, Waveshare, USR, …).
@@ -98,6 +100,10 @@ Temperatures, airflow, fan intensity and filter wear appear along those paths. W
   ```
 
   The probe can only send Modbus *read* requests. Writes are blocked twice: by a client proxy, and by a check of the function code before any frame is sent.
+
+## Icon
+
+The integration ships its own icon (`custom_components/thessla_green_airpack/brand/`), shown by Home Assistant 2026.3 and newer. Source: `assets/icon.svg`. It is an original design, not the manufacturer's logo.
 
 ## Development
 
