@@ -1,0 +1,543 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Thessla Green AirPack",
+        "description": "Connect through a Modbus TCP → RTU gateway (e.g. Elfin EW11, Waveshare) wired to the AirPack Air-B port (9600 8N1).",
+        "data": {
+          "name": "Name",
+          "host": "Gateway host / IP",
+          "port": "TCP port",
+          "unit_id": "Modbus device address",
+          "model": "Model"
+        },
+        "data_description": {
+          "unit_id": "AirPack default is 10 (range 10–19).",
+          "model": "Optional hardware is detected automatically."
+        }
+      },
+      "reconfigure": {
+        "title": "Change connection",
+        "data": {
+          "host": "Gateway host / IP",
+          "port": "TCP port",
+          "unit_id": "Modbus device address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the gateway. Check IP address and port.",
+      "no_response": "The gateway is reachable but the AirPack does not answer. Check the device address, wiring and gateway serial settings (9600 8N1, Modbus TCP→RTU).",
+      "invalid_response": "The device does not look like an AirPack.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This AirPack is already configured",
+      "reconfigure_successful": "Connection updated",
+      "wrong_device": "A different AirPack answered at this address"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "data": {
+          "scan_interval": "Polling interval",
+          "timeout": "Request timeout",
+          "request_delay": "Delay between requests",
+          "read_only": "Read-only mode"
+        },
+        "data_description": {
+          "request_delay": "Increase for slow or unreliable gateways.",
+          "read_only": "Block every write to the device."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "outside_temperature": {
+        "name": "Outside air temperature"
+      },
+      "supply_temperature": {
+        "name": "Supply air temperature"
+      },
+      "exhaust_temperature": {
+        "name": "Extract air temperature"
+      },
+      "fpx_temperature": {
+        "name": "FPX temperature"
+      },
+      "duct_supply_temperature": {
+        "name": "Duct supply temperature"
+      },
+      "gwc_temperature": {
+        "name": "GWC temperature"
+      },
+      "ambient_temperature": {
+        "name": "Ambient temperature"
+      },
+      "required_temperature": {
+        "name": "Comfort target temperature"
+      },
+      "supply_air_flow": {
+        "name": "Supply airflow"
+      },
+      "exhaust_air_flow": {
+        "name": "Exhaust airflow"
+      },
+      "supply_flowrate": {
+        "name": "Target supply airflow"
+      },
+      "exhaust_flowrate": {
+        "name": "Target exhaust airflow"
+      },
+      "supply_percentage": {
+        "name": "Supply intensity"
+      },
+      "exhaust_percentage": {
+        "name": "Exhaust intensity"
+      },
+      "min_percentage": {
+        "name": "Minimum intensity"
+      },
+      "max_percentage": {
+        "name": "Maximum intensity"
+      },
+      "supply_filter_wear": {
+        "name": "Supply filter wear"
+      },
+      "exhaust_filter_wear": {
+        "name": "Exhaust filter wear"
+      },
+      "heat_recovery_efficiency": {
+        "name": "Heat recovery efficiency"
+      },
+      "supply_filter_date": {
+        "name": "Supply filter replacement due"
+      },
+      "exhaust_filter_date": {
+        "name": "Exhaust filter replacement due"
+      },
+      "active_alarms": {
+        "name": "Active alarms"
+      },
+      "stop_ahu_code": {
+        "name": "Stop alarm code"
+      },
+      "dac_supply": {
+        "name": "Supply fan control voltage"
+      },
+      "dac_exhaust": {
+        "name": "Exhaust fan control voltage"
+      },
+      "dac_heater": {
+        "name": "Duct heater control voltage"
+      },
+      "dac_cooler": {
+        "name": "Duct cooler control voltage"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "schedule_period": {
+        "name": "Schedule period"
+      },
+      "operating_mode": {
+        "name": "Operating mode",
+        "state": {
+          "auto": "Automatic",
+          "manual": "Manual",
+          "temporary": "Temporary"
+        }
+      },
+      "active_function": {
+        "name": "Active function",
+        "state": {
+          "none": "None",
+          "hood": "Hood",
+          "fireplace": "Fireplace",
+          "airing_bell_switch": "Airing (bell switch)",
+          "airing_switch": "Airing (on/off switch)",
+          "airing_hygrostat": "Airing (hygrostat)",
+          "airing_air_quality": "Airing (air quality)",
+          "airing_manual": "Airing (manual)",
+          "airing_auto_schedule": "Airing (auto schedule)",
+          "airing_manual_schedule": "Airing (manual mode schedule)",
+          "open_windows": "Open windows",
+          "empty_house": "Empty house"
+        }
+      },
+      "bypass_state": {
+        "name": "Bypass state",
+        "state": {
+          "inactive": "Inactive",
+          "free_heating": "Free heating",
+          "free_cooling": "Free cooling"
+        }
+      },
+      "gwc_state": {
+        "name": "GWC state",
+        "state": {
+          "inactive": "Inactive",
+          "winter": "Winter",
+          "summer": "Summer"
+        }
+      },
+      "comfort_state": {
+        "name": "Comfort state",
+        "state": {
+          "inactive": "Inactive",
+          "heating": "Heating",
+          "cooling": "Cooling"
+        }
+      },
+      "fpx_state": {
+        "name": "FPX mode",
+        "state": {
+          "off": "Off",
+          "fpx1": "FPX1",
+          "fpx2": "FPX2"
+        }
+      },
+      "schedule_day": {
+        "name": "Schedule day",
+        "state": {
+          "monday": "Monday",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday",
+          "thursday": "Thursday",
+          "friday": "Friday",
+          "saturday": "Saturday",
+          "sunday": "Sunday"
+        }
+      }
+    },
+    "binary_sensor": {
+      "alarm": {
+        "name": "Warning (E)"
+      },
+      "error": {
+        "name": "Error (S)"
+      },
+      "bypass_actuator": {
+        "name": "Bypass"
+      },
+      "antifreeze_mode": {
+        "name": "FPX anti-freeze"
+      },
+      "gwc_regen_flag": {
+        "name": "GWC regeneration"
+      },
+      "constant_flow_active": {
+        "name": "Constant flow"
+      },
+      "post_heater_on": {
+        "name": "ERV post-heater"
+      },
+      "power_supply_fans": {
+        "name": "Fans power"
+      },
+      "gwc_relay": {
+        "name": "GWC relay"
+      },
+      "heating_cable": {
+        "name": "Heating cable"
+      },
+      "duct_water_heater_pump": {
+        "name": "Water heater pump"
+      },
+      "work_permit": {
+        "name": "Operation confirmation (Expansion)"
+      },
+      "info_output": {
+        "name": "Operation confirmation output (O1)"
+      },
+      "hood_output": {
+        "name": "Hood damper output"
+      },
+      "expansion": {
+        "name": "Expansion module"
+      },
+      "fire_alarm_input": {
+        "name": "Fire alarm input (P.POZ.)"
+      },
+      "duct_heater_protection": {
+        "name": "Duct heater thermal protection"
+      },
+      "ahu_filter_protection": {
+        "name": "FPX heater thermal protection"
+      },
+      "dp_ahu_filter_overflow": {
+        "name": "Filter pressure switch (DP1)"
+      },
+      "dp_duct_filter_overflow": {
+        "name": "Duct filter pressure switch"
+      },
+      "hood_input": {
+        "name": "Hood input"
+      },
+      "contamination_sensor": {
+        "name": "Air quality input"
+      },
+      "airing_sensor": {
+        "name": "Humidity input"
+      },
+      "airing_switch": {
+        "name": "Airing switch input"
+      },
+      "airing_mini": {
+        "name": "AirS airing"
+      },
+      "fan_speed_1_input": {
+        "name": "AirS gear 1"
+      },
+      "fan_speed_2_input": {
+        "name": "AirS gear 2"
+      },
+      "fan_speed_3_input": {
+        "name": "AirS gear 3"
+      },
+      "fireplace_input": {
+        "name": "Fireplace input"
+      },
+      "empty_house_input": {
+        "name": "Empty house input"
+      }
+    },
+    "switch": {
+      "power": {
+        "name": "Power"
+      },
+      "bypass_enabled": {
+        "name": "Bypass enabled"
+      },
+      "gwc_enabled": {
+        "name": "GWC enabled"
+      }
+    },
+    "number": {
+      "air_flow_rate_manual": {
+        "name": "Manual airflow"
+      },
+      "air_flow_rate_temporary": {
+        "name": "Temporary airflow"
+      },
+      "supply_air_temperature_manual": {
+        "name": "Manual supply temperature"
+      },
+      "supply_air_temperature_temporary": {
+        "name": "Temporary supply temperature"
+      },
+      "fan_speed_1_coef": {
+        "name": "AirS gear 1 intensity"
+      },
+      "fan_speed_2_coef": {
+        "name": "AirS gear 2 intensity"
+      },
+      "fan_speed_3_coef": {
+        "name": "AirS gear 3 intensity"
+      },
+      "hood_supply_coef": {
+        "name": "Hood supply intensity"
+      },
+      "hood_exhaust_coef": {
+        "name": "Hood exhaust intensity"
+      },
+      "fireplace_supply_coef": {
+        "name": "Fireplace supply surplus"
+      },
+      "airing_bathroom_coef": {
+        "name": "Bathroom airing intensity"
+      },
+      "airing_coef": {
+        "name": "Room airing intensity"
+      },
+      "contamination_coef": {
+        "name": "Air quality airing intensity"
+      },
+      "empty_house_coef": {
+        "name": "Empty house intensity"
+      },
+      "airing_switch_coef": {
+        "name": "Switch airing intensity"
+      },
+      "open_window_coef": {
+        "name": "Open windows exhaust intensity"
+      },
+      "airing_panel_mode_time": {
+        "name": "Room airing duration"
+      },
+      "airing_switch_mode_time": {
+        "name": "Bell switch airing duration"
+      },
+      "airing_switch_mode_on_delay": {
+        "name": "Switch airing on delay"
+      },
+      "airing_switch_mode_off_delay": {
+        "name": "Switch airing off delay"
+      },
+      "fireplace_mode_time": {
+        "name": "Fireplace duration"
+      },
+      "min_bypass_temperature": {
+        "name": "Bypass minimum outside temperature"
+      },
+      "air_temperature_summer_free_heating": {
+        "name": "Bypass free heating temperature"
+      },
+      "air_temperature_summer_free_cooling": {
+        "name": "Bypass free cooling temperature"
+      },
+      "bypass_coef_1": {
+        "name": "Bypass airflow unbalance"
+      },
+      "bypass_coef_2": {
+        "name": "Bypass supply intensity"
+      },
+      "min_gwc_air_temperature": {
+        "name": "GWC lower threshold"
+      },
+      "max_gwc_air_temperature": {
+        "name": "GWC upper threshold"
+      },
+      "delta_t_gwc": {
+        "name": "GWC regeneration temperature difference"
+      },
+      "gwc_regen_period": {
+        "name": "GWC regeneration duration"
+      }
+    },
+    "time": {
+      "manual_airing_time_to_start": {
+        "name": "Manual mode airing start"
+      },
+      "start_gwc_regen_winter_time": {
+        "name": "GWC winter regeneration start"
+      },
+      "stop_gwc_regen_winter_time": {
+        "name": "GWC winter regeneration end"
+      },
+      "start_gwc_regen_summer_time": {
+        "name": "GWC summer regeneration start"
+      },
+      "stop_gwc_regen_summer_time": {
+        "name": "GWC summer regeneration end"
+      },
+      "pres_check_time": {
+        "name": "Filter check time"
+      }
+    },
+    "button": {
+      "supply_filter_replaced": {
+        "name": "Supply filter replaced"
+      },
+      "exhaust_filter_replaced": {
+        "name": "Exhaust filter replaced"
+      },
+      "redetect": {
+        "name": "Re-detect hardware"
+      }
+    },
+    "select": {
+      "season_mode": {
+        "name": "Season",
+        "state": {
+          "summer": "Summer",
+          "winter": "Winter"
+        }
+      },
+      "special_mode": {
+        "name": "Special function",
+        "state": {
+          "none": "None",
+          "hood": "Hood",
+          "fireplace": "Fireplace",
+          "airing": "Airing",
+          "open_windows": "Open windows",
+          "empty_house": "Empty house"
+        }
+      },
+      "comfort_mode_panel": {
+        "name": "ECO / COMFORT",
+        "state": {
+          "eco": "ECO",
+          "comfort": "COMFORT"
+        }
+      },
+      "bypass_user_mode": {
+        "name": "Bypass mode",
+        "state": {
+          "damper_only": "Damper only",
+          "damper_unbalance": "Damper + airflow unbalance",
+          "damper_exhaust_off": "Damper + exhaust fan off"
+        }
+      },
+      "gwc_regen": {
+        "name": "GWC regeneration",
+        "state": {
+          "none": "None",
+          "daily": "Daily schedule",
+          "temperature": "Temperature"
+        }
+      },
+      "post_heater_mode": {
+        "name": "ERV heater mode",
+        "state": {
+          "inactive": "Inactive",
+          "mode_1": "Mode 1",
+          "mode_2": "Mode 2"
+        }
+      },
+      "pres_check_day": {
+        "name": "Filter check day",
+        "state": {
+          "monday": "Monday",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday",
+          "thursday": "Thursday",
+          "friday": "Friday",
+          "saturday": "Saturday",
+          "sunday": "Sunday"
+        }
+      }
+    },
+    "fan": {
+      "ventilation": {
+        "name": "Ventilation",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "auto": "Automatic",
+              "manual": "Manual",
+              "temporary": "Temporary"
+            }
+          },
+          "airflow": {
+            "name": "Airflow"
+          }
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "read_only": {
+      "message": "The integration is in read-only mode."
+    },
+    "invalid_value": {
+      "message": "The device rejected the value."
+    },
+    "write_failed": {
+      "message": "Writing to the device failed: {error}"
+    },
+    "out_of_range": {
+      "message": "Value out of range: {error}"
+    },
+    "use_power_switch": {
+      "message": "Airflow cannot be 0%. Use the Power switch to turn the unit off."
+    },
+    "detect_failed": {
+      "message": "Hardware detection failed: {error}"
+    }
+  }
+}

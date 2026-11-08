@@ -1,0 +1,14 @@
+{
+  "domain": "thessla_green_airpack",
+  "name": "Thessla Green AirPack",
+  "after_dependencies": ["frontend", "http"],
+  "codeowners": ["@BartoszJanowski"],
+  "config_flow": true,
+  "documentation": "https://github.com/BartoszJanowski/thessla-green-airpack",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/BartoszJanowski/thessla-green-airpack/issues",
+  "loggers": ["pymodbus"],
+  "requirements": ["pymodbus>=3.11"],
+  "version": "0.1.0"
+}
