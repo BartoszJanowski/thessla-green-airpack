@@ -53,6 +53,7 @@ from .decode import (
     serial_string,
 )
 from .energy import ENERGY_KEYS, VALUES_TIME, RecoveredEnergy, heat_recovery_power
+from .issues import async_update_issues
 from .models import Family, family_for_model, model_name
 from .planner import Block, detect_blocks
 from .registers import (
@@ -423,6 +424,7 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         self._compute(data)
         self.failed_keys = failed
+        async_update_issues(self.hass, self.config_entry, data)
         return data
 
     def _compute(self, data: dict[str, Any]) -> None:

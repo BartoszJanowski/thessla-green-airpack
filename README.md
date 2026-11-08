@@ -170,10 +170,19 @@ Other controls:
 
 Under **Configuration** (device page):
 - per-mode airflow and supply temperature. The *Temporary* ones are hidden by default because the Ventilation entity handles them. Supply temperatures are kept only in COMFORT, so they are shown only with duct exchangers.
-- bypass and GWC on/off and their parameters,
+- bypass and GWC on/off and their parameters. See **Bypass mode** below,
 - special-function intensities and durations. *Open windows exhaust intensity* can be **AUTO** (as on the Air++ panel): the intensity then comes from the active Automatic / Manual mode and the number shows *Unknown*. Use the *… from operating mode (AUTO)* switch to turn AUTO on; setting a number turns it off.
 - AirS gears and accessory settings (when ticked in Options),
 - filter replacement buttons: press after replacing a filter (units without AFC).
+
+**Bypass mode** (*Configuration*): what the airflows do while the bypass is open.
+- **Mode 1:** airflows unchanged. The manufacturer's manual says AirPack4 units should use **only mode 1**.
+- **Mode 2:** airflow unbalance (less air extracted than supplied).
+- **Mode 3:** exhaust fan off.
+
+The option labels warn about modes 2 and 3. If the unit is in mode 2 or 3 (set in Home Assistant or on the Air++ panel), **Settings → System → Repairs** shows a warning. Press **Fix**, read the warning and confirm to switch the bypass back to mode 1. The warning disappears by itself when the mode is 1 again.
+
+*Bypass – airflow unbalance* and *Bypass – supply intensity* are used only in modes 2 and 3, and Air++ doesn't show them in mode 1, so they are hidden by default. To show them: device page → *+N entities not shown* → the entity → ⚙ → *Enabled*.
 
 Under **Diagnostics:** firmware, inputs and outputs, control voltages, and **Re-detect hardware**. Press that after fitting new hardware, such as a GWC: new entities appear, and newly detected GWC or duct exchangers are ticked in Options.
 
@@ -433,10 +442,19 @@ Pozostałe kontrolki:
 
 W sekcji **Konfiguracja** (strona urządzenia):
 - intensywność i temperatura nawiewu dla trybów. Nastawy trybu *chwilowego* są domyślnie ukryte, bo obsługuje je encja Wentylacja. Temperatura nawiewu jest utrzymywana tylko w trybie KOMFORT, więc widać ją tylko przy wymiennikach kanałowych.
-- włączanie bypassu i GWC oraz ich parametry,
+- włączanie bypassu i GWC oraz ich parametry. Zobacz **Tryb bypass** poniżej,
 - intensywności i czasy funkcji specjalnych. *OTWARTE OKNA – intensywność wywiewu* może mieć wartość **AUTO** (jak w Air++): intensywność jest wtedy brana z aktywnego trybu automatycznego / manualnego, a pole liczbowe pokazuje *Nieznany*. AUTO włącza przełącznik *… z trybu pracy (AUTO)*; ustawienie liczby je wyłącza.
 - biegi AirS i ustawienia akcesoriów (gdy są zaznaczone w Opcjach),
 - przyciski wymiany filtrów: naciśnij po wymianie filtra (centrale bez AFC).
+
+**Tryb bypass** (*Konfiguracja*): co dzieje się ze strumieniami powietrza przy otwartym bypassie.
+- **Tryb 1:** strumienie bez zmian. Instrukcja producenta mówi, że w centralach AirPack4 powinno się używać **tylko trybu 1**.
+- **Tryb 2:** różnicowanie strumieni (mniej powietrza usuwanego niż nawiewanego).
+- **Tryb 3:** wyłączenie wentylatora wywiewnego.
+
+Etykiety opcji ostrzegają przed trybem 2 i 3. Jeśli centrala pracuje w trybie 2 lub 3 (ustawionym w Home Assistancie albo w Air++), w **Ustawienia → System → Naprawy** pojawi się ostrzeżenie. Naciśnij **Napraw**, przeczytaj ostrzeżenie i potwierdź, aby przywrócić tryb 1. Ostrzeżenie znika samo, gdy tryb wróci na 1.
+
+*Bypass – różnicowanie strumieni* i *Bypass – intensywność nawiewu* działają tylko w trybie 2 i 3, a Air++ w trybie 1 ich nie pokazuje, więc są domyślnie ukryte. Aby je pokazać: strona urządzenia → *+N encji niewyświetlanych* → encja → ⚙ → *Włączona*.
 
 W sekcji **Diagnostyka:** oprogramowanie, wejścia i wyjścia, napięcia sterujące oraz **Wykryj ponownie sprzęt**. Użyj go po zamontowaniu nowego sprzętu, np. GWC: pojawią się nowe encje, a nowo wykryte GWC lub wymienniki kanałowe zostaną zaznaczone w Opcjach.
 

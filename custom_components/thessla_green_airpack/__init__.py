@@ -20,6 +20,7 @@ from .const import (
 )
 from .coordinator import AirPackConfigEntry, AirPackCoordinator
 from .frontend import async_register_card, async_register_panel, async_remove_panel
+from .issues import async_clear_issues
 from .visibility import async_sync_entity_visibility
 
 PLATFORMS: list[Platform] = [
@@ -42,8 +43,19 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return True
 
 
-# Entities that became "disabled by default" after first release (minor version 2).
+# Entities that became "disabled by default" after first release, per minor version.
 HIDDEN_IN_V1_2 = ("air_flow_rate_temporary", "supply_air_temperature_temporary")
+HIDDEN_IN_V1_3 = ("bypass_coef_1", "bypass_coef_2")  # bypass modes 2 / 3 only
+
+
+def _hide_numbers(hass: HomeAssistant, entry: AirPackConfigEntry, keys: tuple[str, ...]) -> None:
+    """Disable existing number entities once (user-disabled ones stay as they are)."""
+    registry = er.async_get(hass)
+    prefix = entry.unique_id or entry.entry_id
+    for key in keys:
+        entity_id = registry.async_get_entity_id("number", DOMAIN, f"{prefix}_{key}")
+        if entity_id and (reg_entry := registry.async_get(entity_id)) and reg_entry.disabled_by is None:
+            registry.async_update_entity(entity_id, disabled_by=er.RegistryEntryDisabler.INTEGRATION)
 
 
 async def async_migrate_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> bool:
@@ -51,13 +63,11 @@ async def async_migrate_entry(hass: HomeAssistant, entry: AirPackConfigEntry) ->
     if entry.version > 1:
         return False
     if entry.minor_version < 2:
-        registry = er.async_get(hass)
-        prefix = entry.unique_id or entry.entry_id
-        for key in HIDDEN_IN_V1_2:
-            entity_id = registry.async_get_entity_id("number", DOMAIN, f"{prefix}_{key}")
-            if entity_id and (reg_entry := registry.async_get(entity_id)) and reg_entry.disabled_by is None:
-                registry.async_update_entity(entity_id, disabled_by=er.RegistryEntryDisabler.INTEGRATION)
+        _hide_numbers(hass, entry, HIDDEN_IN_V1_2)
         hass.config_entries.async_update_entry(entry, minor_version=2)
+    if entry.minor_version < 3:
+        _hide_numbers(hass, entry, HIDDEN_IN_V1_3)
+        hass.config_entries.async_update_entry(entry, minor_version=3)
     return True
 
 
@@ -94,6 +104,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> 
     """Unload a config entry."""
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
+        async_clear_issues(hass, entry)
         await entry.runtime_data.async_save_energy()
         await entry.runtime_data.client.close()
         others = [

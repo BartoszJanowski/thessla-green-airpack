@@ -316,7 +316,7 @@ async def test_migration_hides_temporary_settings(hass: HomeAssistant, fake) -> 
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
     assert registry.async_get(existing.entity_id).disabled_by is er.RegistryEntryDisabler.INTEGRATION
-    assert entry.minor_version == 2
+    assert entry.minor_version == 3
 
 
 async def test_special_functions_option(hass: HomeAssistant, fake) -> None:

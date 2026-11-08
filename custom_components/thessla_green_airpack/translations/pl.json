@@ -521,9 +521,9 @@
       "bypass_user_mode": {
         "name": "Tryb bypass",
         "state": {
-          "damper_only": "Tylko przepustnica",
-          "damper_unbalance": "Przepustnica + różnicowanie",
-          "damper_exhaust_off": "Przepustnica + wyłączenie wywiewu"
+          "damper_only": "Tryb 1 – strumienie bez zmian (zalecany)",
+          "damper_unbalance": "Tryb 2 – różnicowanie strumieni (niezalecany dla AirPack4)",
+          "damper_exhaust_off": "Tryb 3 – wyłączenie wywiewu (niezalecany dla AirPack4)"
         }
       },
       "gwc_regen": {
@@ -569,6 +569,25 @@
           "airflow": {
             "name": "Intensywność"
           }
+        }
+      }
+    }
+  },
+  "issues": {
+    "bypass_mode_not_recommended": {
+      "title": "{name}: tryb bypass {mode} jest niezalecany",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Przywrócić tryb bypass 1?",
+            "description": "Bypass centrali **{name}** pracuje w trybie {mode}. Instrukcja producenta mówi, że w centralach AirPack4 powinno się używać **tylko trybu 1** (strumienie powietrza bez zmian po otwarciu bypassu).\n\nZatwierdź, aby przełączyć bypass na tryb 1. Różnicowanie strumieni i intensywność nawiewu dla bypassu nie są używane w trybie 1."
+          }
+        },
+        "error": {
+          "write_failed": "Zapis do centrali nie powiódł się. Sprawdź połączenie i czy tryb tylko do odczytu jest wyłączony."
+        },
+        "abort": {
+          "not_loaded": "Integracja nie jest załadowana."
         }
       }
     }

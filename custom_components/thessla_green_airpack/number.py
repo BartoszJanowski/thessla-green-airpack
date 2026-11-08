@@ -85,8 +85,10 @@ NUMBERS: tuple[AirPackNumberDescription, ...] = (
     _temp("min_bypass_temperature"),
     _temp("air_temperature_summer_free_heating"),
     _temp("air_temperature_summer_free_cooling"),
-    _pct("bypass_coef_1"),
-    _pct("bypass_coef_2"),
+    # Used only in bypass modes 2 / 3, which the manual says not to use on
+    # AirPack4 (Air++ hides them in mode 1): hidden by default.
+    _pct("bypass_coef_1", entity_registry_enabled_default=False),
+    _pct("bypass_coef_2", entity_registry_enabled_default=False),
     _temp("min_gwc_air_temperature"),
     _temp("max_gwc_air_temperature"),
     _temp("delta_t_gwc"),

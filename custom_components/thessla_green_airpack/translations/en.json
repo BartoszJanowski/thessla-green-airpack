@@ -521,9 +521,9 @@
       "bypass_user_mode": {
         "name": "Bypass mode",
         "state": {
-          "damper_only": "Damper only",
-          "damper_unbalance": "Damper + airflow unbalance",
-          "damper_exhaust_off": "Damper + exhaust fan off"
+          "damper_only": "Mode 1 – airflows unchanged (recommended)",
+          "damper_unbalance": "Mode 2 – airflow unbalance (not recommended for AirPack4)",
+          "damper_exhaust_off": "Mode 3 – exhaust fan off (not recommended for AirPack4)"
         }
       },
       "gwc_regen": {
@@ -569,6 +569,25 @@
           "airflow": {
             "name": "Airflow"
           }
+        }
+      }
+    }
+  },
+  "issues": {
+    "bypass_mode_not_recommended": {
+      "title": "{name}: bypass mode {mode} is not recommended",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Set bypass mode 1?",
+            "description": "The bypass of **{name}** works in mode {mode}. The manufacturer's manual says AirPack4 units should use **mode 1 only** (airflows unchanged when the bypass opens).\n\nSubmit to switch the bypass to mode 1. The airflow unbalance and bypass supply intensity settings are not used in mode 1."
+          }
+        },
+        "error": {
+          "write_failed": "Writing to the unit failed. Check the connection and that read-only mode is off."
+        },
+        "abort": {
+          "not_loaded": "The integration is not loaded."
         }
       }
     }

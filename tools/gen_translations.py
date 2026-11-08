@@ -160,7 +160,7 @@ SELECTS = {
  "season_mode": (("Season","Sezon"), {"summer": ("Summer","Lato"), "winter": ("Winter","Zima")}),
  "special_mode": (("Special function","Funkcja specjalna"), {k: SPECIAL[k] for k in ("none","hood","fireplace")} | {"airing": ("Airing","Wietrzenie"), "open_windows": SPECIAL["open_windows"], "empty_house": SPECIAL["empty_house"]}),
  "comfort_mode_panel": (("ECO / COMFORT","EKO / KOMFORT"), {"eco": ("ECO","EKO"), "comfort": ("COMFORT","KOMFORT")}),
- "bypass_user_mode": (("Bypass mode","Tryb bypass"), {"damper_only": ("Damper only","Tylko przepustnica"), "damper_unbalance": ("Damper + airflow unbalance","Przepustnica + różnicowanie"), "damper_exhaust_off": ("Damper + exhaust fan off","Przepustnica + wyłączenie wywiewu")}),
+ "bypass_user_mode": (("Bypass mode","Tryb bypass"), {"damper_only": ("Mode 1 – airflows unchanged (recommended)","Tryb 1 – strumienie bez zmian (zalecany)"), "damper_unbalance": ("Mode 2 – airflow unbalance (not recommended for AirPack4)","Tryb 2 – różnicowanie strumieni (niezalecany dla AirPack4)"), "damper_exhaust_off": ("Mode 3 – exhaust fan off (not recommended for AirPack4)","Tryb 3 – wyłączenie wywiewu (niezalecany dla AirPack4)")}),
  "gwc_regen": (("GWC regeneration","Regeneracja GWC"), {"none": ("None","Brak"), "daily": ("Daily schedule","Dobowa"), "temperature": ("Temperature","Temperaturowa")}),
  "post_heater_mode": (("ERV heater mode","Tryb nagrzewnicy ERV"), {"inactive": ("Inactive","Nieaktywna"), "mode_1": ("Mode 1","Tryb 1"), "mode_2": ("Mode 2","Tryb 2")}),
  "pres_check_day": (("Filter check day","Dzień kontroli filtrów"), WEEK),
@@ -219,6 +219,21 @@ EXC = {
  "detect_failed": ("Hardware detection failed: {error}","Wykrywanie sprzętu nie powiodło się: {error}"),
 }
 
+ISSUES = {
+ "bypass_mode_not_recommended": {
+  "title": ("{name}: bypass mode {mode} is not recommended","{name}: tryb bypass {mode} jest niezalecany"),
+  "fix_flow": {
+   "step": {"confirm": {
+    "title": ("Set bypass mode 1?","Przywrócić tryb bypass 1?"),
+    "description": ("The bypass of **{name}** works in mode {mode}. The manufacturer's manual says AirPack4 units should use **mode 1 only** (airflows unchanged when the bypass opens).\n\nSubmit to switch the bypass to mode 1. The airflow unbalance and bypass supply intensity settings are not used in mode 1.",
+                    "Bypass centrali **{name}** pracuje w trybie {mode}. Instrukcja producenta mówi, że w centralach AirPack4 powinno się używać **tylko trybu 1** (strumienie powietrza bez zmian po otwarciu bypassu).\n\nZatwierdź, aby przełączyć bypass na tryb 1. Różnicowanie strumieni i intensywność nawiewu dla bypassu nie są używane w trybie 1."),
+   }},
+   "error": {"write_failed": ("Writing to the unit failed. Check the connection and that read-only mode is off.","Zapis do centrali nie powiódł się. Sprawdź połączenie i czy tryb tylko do odczytu jest wyłączony.")},
+   "abort": {"not_loaded": ("The integration is not loaded.","Integracja nie jest załadowana.")},
+  },
+ },
+}
+
 def pick(tree, i):
     if isinstance(tree, tuple): return tree[i]
     return {k: pick(v, i) for k, v in tree.items()}
@@ -243,6 +258,7 @@ def build(i):
         "air_quality": ("Air quality sensor","Czujnik jakości powietrza")[i],
         "airing_switch": ("Airing switch (bell / on-off)","Przełącznik wietrzenia (dzwonkowy / ON-OFF)")[i]}}}
     return {"config": pick(CONFIG, i), "options": pick(OPTIONS, i), "selector": selector, "entity": ent,
+            "issues": pick(ISSUES, i),
             "exceptions": {k: {"message": v[i]} for k, v in EXC.items()}}
 
 en, pl = build(0), build(1)
