@@ -13,6 +13,7 @@ CONF_SCAN_INTERVAL: Final = "scan_interval"
 CONF_TIMEOUT: Final = "timeout"
 CONF_REQUEST_DELAY: Final = "request_delay"
 CONF_READ_ONLY: Final = "read_only"
+CONF_SPECIAL_FUNCTIONS: Final = "special_functions"
 
 DEFAULT_NAME: Final = "AirPack"
 DEFAULT_PORT: Final = 502
@@ -21,6 +22,17 @@ DEFAULT_SCAN_INTERVAL: Final = 30  # s
 DEFAULT_TIMEOUT: Final = 3  # s
 DEFAULT_REQUEST_DELAY: Final = 0  # ms
 DEFAULT_READ_ONLY: Final = False
+
+# Special functions that can be activated manually (select option -> register 0x1080 value).
+# Which ones the unit offers depends on installer settings that are not exposed
+# over Modbus (e.g. hood type), so the user picks them in Options.
+SPECIAL_FUNCTIONS: Final = {
+    "hood": 1,
+    "fireplace": 2,
+    "airing": 7,
+    "open_windows": 10,
+    "empty_house": 11,
+}
 
 MIN_SCAN_INTERVAL: Final = 5
 MAX_SCAN_INTERVAL: Final = 300

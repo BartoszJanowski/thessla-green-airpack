@@ -45,12 +45,25 @@
           "scan_interval": "Polling interval",
           "timeout": "Request timeout",
           "request_delay": "Delay between requests",
-          "read_only": "Read-only mode"
+          "read_only": "Read-only mode",
+          "special_functions": "Special functions available on the panel"
         },
         "data_description": {
           "request_delay": "Increase for slow or unreliable gateways.",
-          "read_only": "Block every write to the device."
+          "read_only": "Block every write to the device.",
+          "special_functions": "Shown in the Special function selector. Untick functions your installer has not configured (e.g. Hood) - this cannot be detected over Modbus."
         }
+      }
+    }
+  },
+  "selector": {
+    "special_functions": {
+      "options": {
+        "hood": "Hood",
+        "fireplace": "Fireplace",
+        "airing": "Airing",
+        "open_windows": "Open windows",
+        "empty_house": "Empty house"
       }
     }
   },

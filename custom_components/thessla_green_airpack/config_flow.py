@@ -42,6 +42,7 @@ from .const import (
     CONF_READ_ONLY,
     CONF_REQUEST_DELAY,
     CONF_SCAN_INTERVAL,
+    CONF_SPECIAL_FUNCTIONS,
     CONF_TIMEOUT,
     CONF_UNIT_ID,
     DEFAULT_NAME,
@@ -54,6 +55,7 @@ from .const import (
     DOMAIN,
     MAX_SCAN_INTERVAL,
     MIN_SCAN_INTERVAL,
+    SPECIAL_FUNCTIONS,
 )
 from .decode import serial_string
 from .models import DEFAULT_MODEL, MODELS
@@ -219,6 +221,9 @@ class AirPackOptionsFlow(OptionsFlow):
                     CONF_TIMEOUT: int(user_input[CONF_TIMEOUT]),
                     CONF_REQUEST_DELAY: int(user_input[CONF_REQUEST_DELAY]),
                     CONF_READ_ONLY: bool(user_input[CONF_READ_ONLY]),
+                    CONF_SPECIAL_FUNCTIONS: [
+                        f for f in SPECIAL_FUNCTIONS if f in user_input[CONF_SPECIAL_FUNCTIONS]
+                    ],
                 }
             )
         options = self.config_entry.options
@@ -235,6 +240,17 @@ class AirPackOptionsFlow(OptionsFlow):
                     CONF_REQUEST_DELAY,
                     default=options.get(CONF_REQUEST_DELAY, DEFAULT_REQUEST_DELAY),
                 ): _int_box(0, 1000, 10, unit="ms"),
+                vol.Required(
+                    CONF_SPECIAL_FUNCTIONS,
+                    default=list(options.get(CONF_SPECIAL_FUNCTIONS, SPECIAL_FUNCTIONS)),
+                ): SelectSelector(
+                    SelectSelectorConfig(
+                        options=list(SPECIAL_FUNCTIONS),
+                        multiple=True,
+                        mode=SelectSelectorMode.LIST,
+                        translation_key=CONF_SPECIAL_FUNCTIONS,
+                    )
+                ),
                 vol.Required(
                     CONF_READ_ONLY, default=options.get(CONF_READ_ONLY, DEFAULT_READ_ONLY)
                 ): BooleanSelector(),

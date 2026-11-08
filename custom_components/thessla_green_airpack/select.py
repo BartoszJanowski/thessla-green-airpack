@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
+from .const import CONF_SPECIAL_FUNCTIONS, SPECIAL_FUNCTIONS
 from .coordinator import AirPackConfigEntry
 from .entity import AirPackEntity, AirPackEntityDescription, supported_descriptions
 
@@ -28,7 +29,7 @@ SELECTS: tuple[AirPackSelectDescription, ...] = (
     # shown by the "Active function" sensor.
     AirPackSelectDescription(
         key="special_mode",
-        mapping={0: "none", 1: "hood", 2: "fireplace", 7: "airing", 10: "open_windows", 11: "empty_house"},
+        mapping={0: "none", **{value: name for name, value in SPECIAL_FUNCTIONS.items()}},
     ),
     AirPackSelectDescription(key="comfort_mode_panel", mapping={0: "eco", 1: "comfort"}),
     AirPackSelectDescription(
@@ -57,9 +58,20 @@ async def async_setup_entry(
 ) -> None:
     """Set up selects."""
     coordinator = entry.runtime_data
-    async_add_entities(
-        AirPackSelect(coordinator, d) for d in supported_descriptions(coordinator, SELECTS)
-    )
+    enabled = set(entry.options.get(CONF_SPECIAL_FUNCTIONS, SPECIAL_FUNCTIONS))
+    descriptions = []
+    for description in supported_descriptions(coordinator, SELECTS):
+        if description.key == "special_mode":
+            description = replace(
+                description,
+                mapping={
+                    value: name
+                    for value, name in description.mapping.items()
+                    if name == "none" or name in enabled
+                },
+            )
+        descriptions.append(description)
+    async_add_entities(AirPackSelect(coordinator, d) for d in descriptions)
 
 
 class AirPackSelect(AirPackEntity, SelectEntity):

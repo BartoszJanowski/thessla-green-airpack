@@ -45,12 +45,25 @@
           "scan_interval": "Interwał odpytywania",
           "timeout": "Limit czasu zapytania",
           "request_delay": "Opóźnienie między zapytaniami",
-          "read_only": "Tryb tylko do odczytu"
+          "read_only": "Tryb tylko do odczytu",
+          "special_functions": "Funkcje specjalne dostępne na panelu"
         },
         "data_description": {
           "request_delay": "Zwiększ dla wolnych lub niestabilnych bramek.",
-          "read_only": "Blokuje każdy zapis do centrali."
+          "read_only": "Blokuje każdy zapis do centrali.",
+          "special_functions": "Pokazywane w wyborze funkcji specjalnej. Odznacz funkcje, których instalator nie skonfigurował (np. Okap) - nie da się tego wykryć przez Modbus."
         }
+      }
+    }
+  },
+  "selector": {
+    "special_functions": {
+      "options": {
+        "hood": "Okap",
+        "fireplace": "Kominek",
+        "airing": "Wietrzenie",
+        "open_windows": "Otwarte okna",
+        "empty_house": "Pusty dom"
       }
     }
   },

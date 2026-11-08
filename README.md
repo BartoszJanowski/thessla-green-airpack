@@ -52,6 +52,7 @@ Go to *Settings → Devices & services → Add integration → Thessla Green Air
 - **Polling interval:** 5–300 s.
 - **Request timeout.**
 - **Delay between requests:** raise it for flaky Wi-Fi gateways.
+- **Special functions available on the panel:** untick functions your installer has not configured (e.g. Hood). This can't be detected over Modbus.
 - **Read-only mode:** blocks every write. Useful for a first, cautious install.
 
 ## Entities (overview)

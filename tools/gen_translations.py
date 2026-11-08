@@ -190,9 +190,12 @@ OPTIONS = {
  "step": {"init": {
   "title": ("Options","Opcje"),
   "data": {"scan_interval": ("Polling interval","Interwał odpytywania"), "timeout": ("Request timeout","Limit czasu zapytania"),
-           "request_delay": ("Delay between requests","Opóźnienie między zapytaniami"), "read_only": ("Read-only mode","Tryb tylko do odczytu")},
+           "request_delay": ("Delay between requests","Opóźnienie między zapytaniami"), "read_only": ("Read-only mode","Tryb tylko do odczytu"),
+           "special_functions": ("Special functions available on the panel","Funkcje specjalne dostępne na panelu")},
   "data_description": {"request_delay": ("Increase for slow or unreliable gateways.","Zwiększ dla wolnych lub niestabilnych bramek."),
-                       "read_only": ("Block every write to the device.","Blokuje każdy zapis do centrali.")},
+                       "read_only": ("Block every write to the device.","Blokuje każdy zapis do centrali."),
+                       "special_functions": ("Shown in the Special function selector. Untick functions your installer has not configured (e.g. Hood) - this cannot be detected over Modbus.",
+                                             "Pokazywane w wyborze funkcji specjalnej. Odznacz funkcje, których instalator nie skonfigurował (np. Okap) - nie da się tego wykryć przez Modbus.")},
  }},
 }
 EXC = {
@@ -216,7 +219,10 @@ def build(i):
     ent["fan"] = {"ventilation": {"name": ("Ventilation","Wentylacja")[i],
                   "state_attributes": {"preset_mode": {"state": {s: v[i] for s, v in MODES.items()}},
                                        "airflow": {"name": ("Airflow","Intensywność")[i]}}}}
-    return {"config": pick(CONFIG, i), "options": pick(OPTIONS, i), "entity": ent,
+    selector = {"special_functions": {"options": {
+        "hood": ("Hood","Okap")[i], "fireplace": ("Fireplace","Kominek")[i], "airing": ("Airing","Wietrzenie")[i],
+        "open_windows": ("Open windows","Otwarte okna")[i], "empty_house": ("Empty house","Pusty dom")[i]}}}
+    return {"config": pick(CONFIG, i), "options": pick(OPTIONS, i), "selector": selector, "entity": ent,
             "exceptions": {k: {"message": v[i]} for k, v in EXC.items()}}
 
 en, pl = build(0), build(1)

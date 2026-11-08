@@ -313,3 +313,34 @@ async def test_migration_hides_temporary_settings(hass: HomeAssistant, fake) -> 
     await hass.async_block_till_done()
     assert registry.async_get(existing.entity_id).disabled_by is er.RegistryEntryDisabler.INTEGRATION
     assert entry.minor_version == 2
+
+
+async def test_special_functions_option(hass: HomeAssistant, fake) -> None:
+    """Functions not configured by the installer (e.g. hood) can be hidden in Options."""
+    from custom_components.thessla_green_airpack.const import CONF_SPECIAL_FUNCTIONS
+
+    entry = await setup_entry(hass)
+    eid = entity_id(hass, "select", "special_mode")
+    assert "hood" in hass.states.get(eid).attributes["options"]
+
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"],
+        {
+            "scan_interval": 30, "timeout": 3, "request_delay": 0, "read_only": False,
+            CONF_SPECIAL_FUNCTIONS: ["fireplace", "airing", "open_windows", "empty_house"],
+        },
+    )
+    await hass.async_block_till_done()
+    options = hass.states.get(eid).attributes["options"]
+    assert options == ["none", "fireplace", "airing", "open_windows", "empty_house"]
+    with pytest.raises(ServiceValidationError):
+        await hass.services.async_call(
+            "select", "select_option", {"entity_id": eid, "option": "hood"}, blocking=True
+        )
+    assert fake.writes == []
+    # A hood activated by the OK input still shows in the Active function sensor.
+    fake.bank[Table.HOLDING][0x1080] = 1
+    await _refresh(hass, entry)
+    assert hass.states.get(eid).state == STATE_UNKNOWN
+    assert _state(hass, "sensor", "active_function").state == "hood"
