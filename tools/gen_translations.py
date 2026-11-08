@@ -161,8 +161,8 @@ CONFIG = {
  "step": {
   "user": {
    "title": ("Thessla Green AirPack4", "Thessla Green AirPack4"),
-   "description": ("Connect through a Modbus TCP → RTU gateway (e.g. Elfin EW11, Waveshare) wired to the AirPack Air-B port (9600 8N1).",
-                   "Połączenie przez bramkę Modbus TCP → RTU (np. Elfin EW11, Waveshare) podłączoną do portu Air-B centrali (9600 8N1)."),
+   "description": ("Connect through a Modbus TCP → RTU gateway (e.g. Elfin EW11, Waveshare) wired to the AirPack RJ45 socket no. 10 \"AirMobile / Modbus RTU\" (9600 8N1).",
+                   "Połączenie przez bramkę Modbus TCP → RTU (np. Elfin EW11, Waveshare) podłączoną do gniazda RJ45 nr 10 „AirMobile / Modbus RTU” centrali (9600 8N1)."),
    "data": {"name": ("Name","Nazwa"), "host": ("Gateway host / IP","Adres bramki / IP"), "port": ("TCP port","Port TCP"),
             "unit_id": ("Modbus device address","Adres urządzenia Modbus"), "model": ("Model","Model")},
    "data_description": {"unit_id": ("AirPack default is 10 (range 10–19).","Domyślnie 10 (zakres 10–19)."),

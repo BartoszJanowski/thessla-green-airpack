@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Thessla Green AirPack4",
-        "description": "Połączenie przez bramkę Modbus TCP → RTU (np. Elfin EW11, Waveshare) podłączoną do portu Air-B centrali (9600 8N1).",
+        "description": "Połączenie przez bramkę Modbus TCP → RTU (np. Elfin EW11, Waveshare) podłączoną do gniazda RJ45 nr 10 „AirMobile / Modbus RTU” centrali (9600 8N1).",
         "data": {
           "name": "Nazwa",
           "host": "Adres bramki / IP",

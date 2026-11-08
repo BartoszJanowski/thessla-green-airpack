@@ -43,7 +43,7 @@ All AirPack4 variants covered by the manufacturer's `MODBUS_USER_AirPack_4` regi
 
 ### 1. Connect the gateway
 
-1. Wire the gateway's RS-485 **A/B** to the AirPack's **Air-B** port. The Air++ panel keeps its own port, so the two don't interfere.
+1. Connect the gateway to the AirPack's RJ45 **socket no. 10, "AirMobile / Modbus RTU"**, which is the Air-B Modbus port. The Air++ panel uses socket 11, so the two don't interfere. See [Cable](#cable) below.
 2. Configure the gateway's serial side as **9600 baud, 8 data bits, no parity, 1 stop bit (8N1)**.
 3. Set the gateway protocol to **Modbus TCP ↔ RTU conversion**.
    - **Elfin EW11 / EW10:** open the web page (default user/password `admin`/`admin`) → *Communication Settings* → *Protocol*: **Modbus**. Note the **Local Port**. The Elfin default is **8899**; many other gateways use **502**.
@@ -51,6 +51,32 @@ All AirPack4 variants covered by the manufacturer's `MODBUS_USER_AirPack_4` regi
    - Transparent / raw TCP mode is **not** supported.
 4. Give the gateway a fixed IP address, for example with a DHCP reservation in your router.
 5. The AirPack's Modbus device address is **10** by default (allowed range 10–19).
+
+<a id="cable"></a>
+
+#### Cable
+
+The AirPack end is a standard RJ45 plug crimped to **T568B**. Pinout of socket 10:
+
+| Pin | Colour | Signal |
+|---|---|---|
+| 1 | white-orange | RS-485 **B−** |
+| 2 | orange | RS-485 **A+** |
+| 3–6 | | not used |
+| 7 | white-brown | **+24 V DC** |
+| 8 | brown | **GND** |
+
+Thessla Green does not publish this pinout. It comes from several independent community sources and is confirmed by a working AirPack4 400v Energy++ installation.
+- **Measure about 24 V between pins 7 (+) and 8 (−)** before connecting a gateway.
+- Only power a gateway from pin 7 if it accepts 24 V. The **Elfin EW11A** (5–36 V) does; a plain **EW11** (5–18 V) does **not** and needs its own 12 V adapter.
+
+**Elfin EW11A with an RJ45 socket.** The gateway end uses only 4 wires: orange → 5 (A+), white-orange → 6 (B−), white-brown → 7 (VCC), brown → 8 (GND). It is not a straight patch cable.
+
+![AirPack4 to Elfin EW11A wiring](docs/wiring/wiring-elfin-ew11a.svg)
+
+**Waveshare (screw terminals).** Orange → A (485A), white-orange → B (485B), brown → GND. Power the gateway from its own 12 V adapter.
+
+![AirPack4 to Waveshare wiring](docs/wiring/wiring-waveshare.svg)
 
 ### 2. Install
 
@@ -231,7 +257,7 @@ Wszystkie odmiany AirPack4 z mapy rejestrów producenta `MODBUS_USER_AirPack_4`:
 
 ### 1. Podłączenie bramki
 
-1. Podłącz **A/B** z RS-485 bramki do portu **Air-B** centrali. Panel Air++ zostaje na swoim porcie, więc sobie nie przeszkadzają.
+1. Podłącz bramkę do gniazda RJ45 centrali **nr 10 „AirMobile / Modbus RTU”**, czyli portu Modbus Air-B. Panel Air++ korzysta z gniazda 11, więc sobie nie przeszkadzają. Zobacz [Kabel](#kabel) poniżej.
 2. Ustaw port szeregowy bramki: **9600 bodów, 8 bitów danych, bez parzystości, 1 bit stopu (8N1)**.
 3. Ustaw w bramce tryb **konwersji Modbus TCP ↔ RTU**.
    - **Elfin EW11 / EW10:** otwórz stronę bramki (domyślnie login/hasło `admin`/`admin`) → *Communication Settings* → *Protocol*: **Modbus**. Zanotuj **Local Port**. Domyślny port Elfina to **8899**, wiele innych bramek używa **502**.
@@ -239,6 +265,32 @@ Wszystkie odmiany AirPack4 z mapy rejestrów producenta `MODBUS_USER_AirPack_4`:
    - Tryb transparentny („raw TCP”) **nie** jest obsługiwany.
 4. Nadaj bramce stały adres IP, np. przez rezerwację DHCP w routerze.
 5. Adres Modbus centrali to domyślnie **10** (dozwolony zakres 10–19).
+
+<a id="kabel"></a>
+
+#### Kabel
+
+Po stronie centrali jest zwykła wtyczka RJ45 zarobiona w standardzie **T568B**. Pinout gniazda nr 10:
+
+| Pin | Kolor | Sygnał |
+|---|---|---|
+| 1 | biało-pomarańczowy | RS-485 **B−** |
+| 2 | pomarańczowy | RS-485 **A+** |
+| 3–6 | | nieużywane |
+| 7 | biało-brązowy | **+24 V DC** |
+| 8 | brązowy | **GND** |
+
+Thessla Green nie publikuje tego pinoutu. Pochodzi z kilku niezależnych źródeł społeczności i jest potwierdzony działającą instalacją AirPack4 400v Energy++.
+- **Zmierz ok. 24 V między pinami 7 (+) i 8 (−)** przed podłączeniem bramki.
+- Zasilaj bramkę z pinu 7 tylko wtedy, gdy przyjmuje 24 V. **Elfin EW11A** (5–36 V) przyjmuje, a zwykły **EW11** (5–18 V) **nie** i potrzebuje własnego zasilacza 12 V.
+
+**Elfin EW11A z gniazdem RJ45.** Po stronie bramki są tylko 4 żyły: pomarańczowy → 5 (A+), biało-pomarańczowy → 6 (B−), biało-brązowy → 7 (VCC), brązowy → 8 (GND). To nie jest zwykły kabel prosty.
+
+![Kabel AirPack4 – Elfin EW11A](docs/wiring/wiring-elfin-ew11a.svg)
+
+**Waveshare (zaciski śrubowe).** Pomarańczowy → A (485A), biało-pomarańczowy → B (485B), brązowy → GND. Zasilaj bramkę jej własnym zasilaczem 12 V.
+
+![Podłączenie AirPack4 – Waveshare](docs/wiring/wiring-waveshare.svg)
 
 ### 2. Instalacja
 
