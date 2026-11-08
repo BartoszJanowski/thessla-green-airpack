@@ -11,6 +11,9 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .coordinator import AirPackCoordinator
 from .registers import Feature
 
+# Features whose entities are shown or hidden by Options -> Installed equipment.
+OPTION_FEATURES = frozenset({Feature.GWC, Feature.DUCT, Feature.ERV})
+
 
 @dataclass(frozen=True, kw_only=True)
 class AirPackEntityDescription(EntityDescription):
@@ -60,7 +63,10 @@ class AirPackEntity(CoordinatorEntity[AirPackCoordinator]):
         if feature is None:
             reg = coordinator.family.index.get(description.reg_key)
             feature = reg.feature if reg else None
-        if not coordinator.feature_present(feature):
+        # GWC / duct / ERV visibility follows Options (see visibility.py).
+        if feature not in OPTION_FEATURES and not coordinator.feature_present(feature):
+            self._attr_entity_registry_enabled_default = False
+        if description.key in coordinator.hidden_keys:
             self._attr_entity_registry_enabled_default = False
 
     @property

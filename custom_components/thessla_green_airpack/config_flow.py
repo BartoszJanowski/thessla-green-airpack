@@ -38,6 +38,7 @@ from .client import (
 
 SERVER_DEVICE_FAILURE = 0x04
 from .const import (
+    CONF_EQUIPMENT,
     CONF_MODEL,
     CONF_READ_ONLY,
     CONF_REQUEST_DELAY,
@@ -53,6 +54,7 @@ from .const import (
     DEFAULT_TIMEOUT,
     DEFAULT_UNIT_ID,
     DOMAIN,
+    EQUIPMENT,
     MAX_SCAN_INTERVAL,
     MIN_SCAN_INTERVAL,
     SPECIAL_FUNCTIONS,
@@ -224,9 +226,16 @@ class AirPackOptionsFlow(OptionsFlow):
                     CONF_SPECIAL_FUNCTIONS: [
                         f for f in SPECIAL_FUNCTIONS if f in user_input[CONF_SPECIAL_FUNCTIONS]
                     ],
+                    CONF_EQUIPMENT: [e for e in EQUIPMENT if e in user_input[CONF_EQUIPMENT]],
                 }
             )
         options = self.config_entry.options
+        if CONF_EQUIPMENT in options:
+            equipment = list(options[CONF_EQUIPMENT])
+        elif (coordinator := getattr(self.config_entry, "runtime_data", None)) is not None:
+            equipment = coordinator.equipment  # detection result
+        else:
+            equipment = []
         schema = vol.Schema(
             {
                 vol.Required(
@@ -249,6 +258,14 @@ class AirPackOptionsFlow(OptionsFlow):
                         multiple=True,
                         mode=SelectSelectorMode.LIST,
                         translation_key=CONF_SPECIAL_FUNCTIONS,
+                    )
+                ),
+                vol.Required(CONF_EQUIPMENT, default=equipment): SelectSelector(
+                    SelectSelectorConfig(
+                        options=list(EQUIPMENT),
+                        multiple=True,
+                        mode=SelectSelectorMode.LIST,
+                        translation_key=CONF_EQUIPMENT,
                     )
                 ),
                 vol.Required(

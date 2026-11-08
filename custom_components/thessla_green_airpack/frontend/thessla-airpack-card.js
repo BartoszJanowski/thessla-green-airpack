@@ -10,7 +10,7 @@
  * does not break the card. Anything the device does not have is hidden.
  */
 
-const CARD_VERSION = "1.1.0";
+const CARD_VERSION = "1.2.0";
 const DOMAIN = "thessla_green_airpack";
 
 const I18N = {

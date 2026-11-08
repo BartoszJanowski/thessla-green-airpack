@@ -26,14 +26,20 @@ from .client import (
 )
 from .const import (
     ALARM_FULL_READ_EVERY,
+    CONF_EQUIPMENT,
     CONF_MODEL,
     CONF_SCAN_INTERVAL,
+    CONF_SPECIAL_FUNCTIONS,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    EQUIPMENT,
+    EQUIPMENT_ENTITIES,
+    FUNCTION_ENTITIES,
     MANUFACTURER,
     MAX_MERGE_GAP,
     MAX_REGISTERS_PER_READ,
     PANEL_URL_PATH,
+    SPECIAL_FUNCTIONS,
     STORAGE_VERSION,
 )
 from .decode import (
@@ -192,6 +198,34 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """True if optional hardware was detected (or no feature required)."""
         return feature is None or feature in self.capabilities.features
 
+    # -- visibility (Options) ----------------------------------------------------
+
+    def detected_equipment(self, features: set[Feature] | None = None) -> list[str]:
+        """Equipment ticked by default: what detection found (GWC, duct exchangers)."""
+        features = self.capabilities.features if features is None else features
+        detected = {"gwc": Feature.GWC in features, "duct": Feature.DUCT in features}
+        return [e for e in EQUIPMENT if detected.get(e, False)]
+
+    @property
+    def equipment(self) -> list[str]:
+        """Equipment ticked in Options (detection result until Options are saved)."""
+        options = self.config_entry.options
+        if CONF_EQUIPMENT in options:
+            return [e for e in EQUIPMENT if e in options[CONF_EQUIPMENT]]
+        return self.detected_equipment()
+
+    @property
+    def hidden_keys(self) -> set[str]:
+        """Entity keys hidden by unticked special functions / equipment."""
+        functions = set(self.config_entry.options.get(CONF_SPECIAL_FUNCTIONS, SPECIAL_FUNCTIONS))
+        equipment = set(self.equipment)
+        hidden: set[str] = set()
+        visible: set[str] = set()
+        for groups, ticked in ((FUNCTION_ENTITIES, functions), (EQUIPMENT_ENTITIES, equipment)):
+            for group, keys in groups.items():
+                (visible if group in ticked else hidden).update(keys)
+        return hidden - visible  # an entity in a ticked group stays visible
+
     # -- setup / detection -----------------------------------------------------
 
     async def _async_setup(self) -> None:
@@ -285,8 +319,8 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             features.add(Feature.CF)
         if values.get("expansion"):
             features.add(Feature.EXPANSION)
-        if "post_heater_mode" in caps.supported:
-            features.add(Feature.ERV)
+        # ERV is not detected: its registers answer even without the system
+        # (Air++ has no ERV tab then). Users tick it in Options.
         return features
 
     def _identity_from_raw(self) -> dict[str, Any]:

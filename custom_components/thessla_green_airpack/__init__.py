@@ -20,6 +20,7 @@ from .const import (
 )
 from .coordinator import AirPackConfigEntry, AirPackCoordinator
 from .frontend import async_register_card, async_register_panel, async_remove_panel
+from .visibility import async_sync_entity_visibility
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -77,6 +78,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> b
         await client.close()
         raise
     entry.runtime_data = coordinator
+    # Unticked special functions / equipment -> their entities are hidden.
+    async_sync_entity_visibility(hass, entry)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     await async_register_panel(hass)

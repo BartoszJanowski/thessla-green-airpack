@@ -14,7 +14,7 @@ An unofficial Home Assistant integration for **Thessla Green AirPack4** heat-rec
 
 ### Features
 
-- **Control:** airflow, operating mode (Automatic / Manual / Temporary), season, special functions (fireplace, airing, open windows, empty house, hood), ECO / COMFORT, power, bypass and GWC.
+- **Control:** airflow, operating mode (Automatic / Manual / Temporary), season, special functions (fireplace, airing, open windows, empty house, hood), ECO / COMFORT (with duct exchangers), power, bypass and GWC.
 - **Settings:** the user and installer settings from the Air++ menu: special-function intensities and durations, bypass and GWC parameters, AirS gears, per-mode airflow and supply temperature.
 - **Two-way sync:** changes made on the Air++ panel, AirS or AirMobile appear in Home Assistant on the next poll.
 - **Never breaks on other models:** the integration probes which registers your unit has.
@@ -118,10 +118,32 @@ To change the IP, port or address later: *Devices & services → Thessla Green A
 | **Polling interval** | 30 s | How often the unit is read (5–300 s). One read takes about 2 s over Wi-Fi. 10–15 s makes panel changes show up faster. Below 10 s gains little but loads the gateway and the HA database more. Reading never wears the unit. |
 | **Request timeout** | 3 s | How long to wait for an answer. Increase it for an unreliable Wi-Fi gateway. |
 | **Delay between requests** | 0 ms | Pause between Modbus requests. Set 50–100 ms if you see intermittent *Unavailable* states. |
-| **Special functions available on the panel** | all | Functions offered in the *Special function* selector. Untick the ones your installer has not configured (often *Hood*), because this can't be detected over Modbus. |
+| **Special functions available on the panel** | all | Functions offered in the *Special function* selector. Untick the ones your installer has not configured (often *Hood*), because this can't be detected over Modbus. Their settings are hidden too. |
+| **Installed equipment** | detected | Optional equipment and accessories you have. Settings and sensors of unticked items are hidden. See the table below. |
 | **Read-only mode** | off | Blocks **every** write to the unit: Home Assistant only reads, and attempts to change something show an error. Recommended for the first day. Turn it off when you want to control the unit from Home Assistant. |
 
 The integration reloads automatically after you save the options.
+
+What each item hides when it is unticked:
+
+| Item | Hidden entities | Default |
+|---|---|---|
+| *Hood* (special function) | hood supply and exhaust intensity | ticked |
+| *Fireplace* (special function) | fireplace airflow unbalance and duration | ticked |
+| *Airing* (special function) | room airing intensity and duration, manual-mode airing start | ticked |
+| *Open windows* (special function) | open windows exhaust intensity | ticked |
+| *Empty house* (special function) | empty house intensity | ticked |
+| **GWC** | GWC switch, regeneration, thresholds, times, state, temperature, relay | ticked when the GWC sensor (TZ3) is detected |
+| **Duct heater / cooler (ECO / COMFORT)** | ECO / COMFORT, COMFORT state, COMFORT target temperature, duct supply temperature (TN2) | ticked when the TN2 sensor is detected |
+| **ERV system** | ERV heater mode, ERV post-heater | unticked: its registers answer even without the system |
+| **AirS panel** | AirS gear 1–3 intensity, AirS inputs | unticked (accessory) |
+| **Hygrostat** | bathroom airing intensity, humidity input | unticked (accessory) |
+| **Air quality sensor** | air quality airing intensity, air quality input | unticked (accessory) |
+| **Airing switch** | switch airing intensity, bell switch airing duration, on/off delays, switch input | unticked (accessory) |
+
+- Hidden entities are disabled, not deleted. Ticking the item brings them back with their history.
+- Entities you disabled yourself are never enabled by the integration.
+- **Re-detect hardware** ticks GWC or duct exchangers when it finds their sensors.
 
 ### 5. Controls and operating modes
 
@@ -143,16 +165,17 @@ Other controls:
 - **Power:** turns the unit on and off, like the panel's power button.
 - **Season:** summer / winter. This selects the summer or winter schedule.
 - **Special function:** none / fireplace / airing / open windows / empty house / hood. The *Active function* sensor also shows functions started by wall switches or sensors.
-- **ECO / COMFORT:** COMFORT keeps the supply temperature using the duct heater/cooler or the ERV post-heater, if fitted.
+- **ECO / COMFORT:** COMFORT keeps the supply temperature using the duct heater / cooler. The manufacturer's Modbus documentation says COMFORT is not available without duct exchangers, so these entities are shown only when *Duct heater / cooler* is ticked in Options (ticked automatically when the TN2 sensor is detected).
+- **ERV:** a separate system with a secondary heater and its own modes (1 – economical, 2 – comfort), set on the Air++ panel under *Settings → ERV*. Its registers answer even on units without it, so tick *ERV system* in Options only if your Air++ panel has the ERV tab.
 
 Under **Configuration** (device page):
 - per-mode airflow and supply temperature. The *Temporary* ones are hidden by default because the Ventilation entity handles them.
 - bypass and GWC on/off and their parameters,
 - special-function intensities and durations,
-- AirS gears,
+- AirS gears and accessory settings (when ticked in Options),
 - filter replacement buttons: press after replacing a filter (units without AFC).
 
-Under **Diagnostics:** firmware, inputs and outputs, control voltages, and **Re-detect hardware**. Press that after fitting new hardware, such as a GWC.
+Under **Diagnostics:** firmware, inputs and outputs, control voltages, and **Re-detect hardware**. Press that after fitting new hardware, such as a GWC: new entities appear, and newly detected GWC or duct exchangers are ticked in Options.
 
 Entity order on the device page is alphabetical. That is how Home Assistant works, and an integration can't change it.
 
@@ -215,6 +238,8 @@ New versions are published as [GitHub releases](https://github.com/BartoszJanows
 - **Entities briefly become *Unavailable*:** increase *Delay between requests* and *Request timeout*. Don't connect two Modbus clients to the same gateway at once (for example an old integration and this one).
 - **Entity names are in English although the interface is in Polish:** entity names follow the *system* language (*Settings → System → General → Language*), not your profile language. Set it to Polski and restart.
 - **The card can't be found:** hard-refresh the browser. In the mobile app, pull down to reload.
+- **A setting or control is missing (e.g. ECO / COMFORT, AirS gears, hood settings):** tick the equipment or special function in *Options*. See [Options](#4-options).
+- **The panel in the mobile app shows an old version after an update:** in the app go to *Settings → Companion app → Debugging → Reset frontend cache*, or close the app completely and open it again.
 - **Which registers does my unit have?**
   - Device page → **⋮ → Download diagnostics**.
   - Or run the read-only probe. It can only send Modbus *read* requests:
@@ -252,7 +277,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements_test.txt
 
 ### Możliwości
 
-- **Sterowanie:** intensywność, tryb pracy (automatyczny / manualny / chwilowy), sezon, funkcje specjalne (kominek, wietrzenie, otwarte okna, pusty dom, okap), EKO / KOMFORT, zasilanie, bypass i GWC.
+- **Sterowanie:** intensywność, tryb pracy (automatyczny / manualny / chwilowy), sezon, funkcje specjalne (kominek, wietrzenie, otwarte okna, pusty dom, okap), EKO / KOMFORT (z wymiennikami kanałowymi), zasilanie, bypass i GWC.
 - **Ustawienia:** nastawy użytkownika i instalatora z menu Air++: intensywności i czasy funkcji specjalnych, parametry bypassu i GWC, biegi AirS, intensywność i temperatura nawiewu dla trybów.
 - **Synchronizacja w obie strony:** zmiany z panelu Air++, AirS lub AirMobile pojawiają się w Home Assistancie przy następnym odczycie.
 - **Nie psuje się na innych modelach:** integracja sprawdza, które rejestry ma Twoja centrala.
@@ -356,10 +381,32 @@ Zmiana IP, portu lub adresu później: *Urządzenia oraz usługi → Thessla Gre
 | **Interwał odpytywania** | 30 s | Jak często odczytywana jest centrala (5–300 s). Jeden odczyt przez Wi‑Fi trwa ok. 2 s. Przy 10–15 s zmiany z panelu pojawiają się szybciej. Poniżej 10 s zysk jest niewielki, a bramka i baza HA są bardziej obciążone. Odczyt nie zużywa centrali. |
 | **Limit czasu zapytania** | 3 s | Jak długo czekać na odpowiedź. Zwiększ przy niestabilnej bramce Wi‑Fi. |
 | **Opóźnienie między zapytaniami** | 0 ms | Przerwa między zapytaniami Modbus. Ustaw 50–100 ms, jeśli encje chwilami robią się *Niedostępne*. |
-| **Funkcje specjalne dostępne na panelu** | wszystkie | Funkcje w wyborze *Funkcja specjalna*. Odznacz te, których instalator nie skonfigurował (często *Okap*), bo tego nie da się wykryć przez Modbus. |
+| **Funkcje specjalne dostępne na panelu** | wszystkie | Funkcje w wyborze *Funkcja specjalna*. Odznacz te, których instalator nie skonfigurował (często *Okap*), bo tego nie da się wykryć przez Modbus. Ich ustawienia też są wtedy ukryte. |
+| **Wyposażenie centrali** | wykryte | Wyposażenie dodatkowe i akcesoria, które masz. Ustawienia i czujniki odznaczonych pozycji są ukryte. Szczegóły w tabeli poniżej. |
 | **Tryb tylko do odczytu** | wyłączony | Blokuje **każdy** zapis do centrali: Home Assistant tylko czyta, a próba zmiany kończy się komunikatem błędu. Zalecany na pierwszy dzień. Wyłącz, gdy chcesz sterować centralą z Home Assistanta. |
 
 Po zapisaniu opcji integracja sama się przeładowuje.
+
+Co ukrywa każda odznaczona pozycja:
+
+| Pozycja | Ukryte encje | Domyślnie |
+|---|---|---|
+| *Okap* (funkcja specjalna) | OKAP – intensywność nawiewu i wywiewu | zaznaczona |
+| *Kominek* (funkcja specjalna) | KOMINEK – różnicowanie strumieni i czas | zaznaczona |
+| *Wietrzenie* (funkcja specjalna) | WIETRZENIE (pokoje) – intensywność i czas, start wietrzenia w trybie manualnym | zaznaczona |
+| *Otwarte okna* (funkcja specjalna) | OTWARTE OKNA – intensywność wywiewu | zaznaczona |
+| *Pusty dom* (funkcja specjalna) | PUSTY DOM – intensywność | zaznaczona |
+| **GWC** | GWC aktywny, regeneracja, progi, godziny, stan, temperatura, przekaźnik | zaznaczona, gdy wykryto czujnik GWC (TZ3) |
+| **Wymienniki kanałowe (EKO / KOMFORT)** | EKO / KOMFORT, stan trybu KOMFORT, temperatura zadana KOMFORT, temperatura za nagrzewnicą kanałową (TN2) | zaznaczona, gdy wykryto czujnik TN2 |
+| **System ERV** | tryb nagrzewnicy ERV, nagrzewnica wtórna ERV | odznaczona: rejestry ERV odpowiadają także bez systemu |
+| **Panel AirS** | AirS – intensywność biegów 1–3, wejścia AirS | odznaczona (akcesorium) |
+| **Higrostat** | WIETRZENIE (łazienka) – intensywność, wejście czujnika wilgotności | odznaczona (akcesorium) |
+| **Czujnik jakości powietrza** | WIETRZENIE (jakość powietrza) – intensywność, wejście czujnika | odznaczona (akcesorium) |
+| **Przełącznik wietrzenia** | WIETRZENIE (przełącznik) – intensywność, WIETRZENIE (dzwonkowy) – czas, opóźnienia, wejście przełącznika | odznaczona (akcesorium) |
+
+- Ukryte encje są wyłączone, a nie usunięte. Zaznaczenie pozycji przywraca je razem z historią.
+- Encji, które wyłączyłeś sam, integracja nigdy nie włącza.
+- **Wykryj ponownie sprzęt** zaznacza GWC lub wymienniki kanałowe, gdy znajdzie ich czujniki.
 
 ### 5. Sterowanie i tryby pracy
 
@@ -381,16 +428,17 @@ Pozostałe kontrolki:
 - **Zasilanie:** włącza i wyłącza centralę, jak przycisk na panelu.
 - **Sezon:** lato / zima. Wybiera harmonogram letni lub zimowy.
 - **Funkcja specjalna:** brak / kominek / wietrzenie / otwarte okna / pusty dom / okap. Czujnik *Aktywna funkcja* pokazuje też funkcje uruchomione przyciskami lub czujnikami podłączonymi do centrali.
-- **EKO / KOMFORT:** KOMFORT utrzymuje temperaturę nawiewu nagrzewnicą/chłodnicą kanałową lub nagrzewnicą wtórną ERV, jeśli są zamontowane.
+- **EKO / KOMFORT:** KOMFORT utrzymuje temperaturę nawiewu nagrzewnicą / chłodnicą kanałową. Według dokumentacji Modbus producenta tryb KOMFORT jest niedostępny bez wymienników kanałowych, dlatego te encje są widoczne tylko wtedy, gdy w Opcjach zaznaczono *Wymienniki kanałowe* (zaznaczane automatycznie po wykryciu czujnika TN2).
+- **ERV:** osobny system z nagrzewnicą wtórną i własnymi trybami (1 – ekonomiczny, 2 – komfortowy), ustawiany w Air++ w *Ustawienia → Nastawy → ERV*. Rejestry ERV odpowiadają także w centralach bez tego systemu, więc zaznacz *System ERV* w Opcjach tylko wtedy, gdy Twój panel Air++ ma zakładkę ERV.
 
 W sekcji **Konfiguracja** (strona urządzenia):
 - intensywność i temperatura nawiewu dla trybów. Nastawy trybu *chwilowego* są domyślnie ukryte, bo obsługuje je encja Wentylacja.
 - włączanie bypassu i GWC oraz ich parametry,
 - intensywności i czasy funkcji specjalnych,
-- biegi AirS,
+- biegi AirS i ustawienia akcesoriów (gdy są zaznaczone w Opcjach),
 - przyciski wymiany filtrów: naciśnij po wymianie filtra (centrale bez AFC).
 
-W sekcji **Diagnostyka:** oprogramowanie, wejścia i wyjścia, napięcia sterujące oraz **Wykryj ponownie sprzęt**. Użyj go po zamontowaniu nowego sprzętu, np. GWC.
+W sekcji **Diagnostyka:** oprogramowanie, wejścia i wyjścia, napięcia sterujące oraz **Wykryj ponownie sprzęt**. Użyj go po zamontowaniu nowego sprzętu, np. GWC: pojawią się nowe encje, a nowo wykryte GWC lub wymienniki kanałowe zostaną zaznaczone w Opcjach.
 
 Kolejność encji na stronie urządzenia jest alfabetyczna. Tak działa Home Assistant, a integracja nie może jej zmienić.
 
@@ -453,6 +501,8 @@ Nowe wersje są publikowane jako [wydania na GitHubie](https://github.com/Bartos
 - **Encje chwilami są *Niedostępne*:** zwiększ *Opóźnienie między zapytaniami* i *Limit czasu zapytania*. Nie podłączaj dwóch klientów Modbus do jednej bramki naraz (np. starej integracji i tej).
 - **Nazwy encji są po angielsku, choć interfejs jest po polsku:** nazwy encji zależą od języka *systemu* (*Ustawienia → System → Ogólne → Język*), a nie języka profilu. Ustaw Polski i uruchom HA ponownie.
 - **Karty nie ma na liście:** zrób twarde odświeżenie przeglądarki. W aplikacji mobilnej przeciągnij ekran w dół.
+- **Brakuje ustawienia lub sterowania (np. EKO / KOMFORT, biegów AirS, ustawień okapu):** zaznacz wyposażenie lub funkcję specjalną w *Opcjach*. Zobacz [Opcje](#4-opcje).
+- **Panel w aplikacji mobilnej po aktualizacji pokazuje starą wersję:** w aplikacji wejdź w *Ustawienia → Aplikacja towarzysząca → Debugowanie → Zresetuj pamięć podręczną interfejsu* albo zamknij aplikację całkowicie i otwórz ponownie.
 - **Które rejestry ma moja centrala?**
   - Strona urządzenia → **⋮ → Pobierz diagnostykę**.
   - Albo uruchom sondę tylko do odczytu. Może wysyłać wyłącznie zapytania *odczytu* Modbus:

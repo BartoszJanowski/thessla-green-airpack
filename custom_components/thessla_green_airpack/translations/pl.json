@@ -46,12 +46,14 @@
           "timeout": "Limit czasu zapytania",
           "request_delay": "Opóźnienie między zapytaniami",
           "read_only": "Tryb tylko do odczytu",
-          "special_functions": "Funkcje specjalne dostępne na panelu"
+          "special_functions": "Funkcje specjalne dostępne na panelu",
+          "equipment": "Wyposażenie centrali"
         },
         "data_description": {
           "request_delay": "Zwiększ dla wolnych lub niestabilnych bramek.",
           "read_only": "Blokuje każdy zapis do centrali.",
-          "special_functions": "Pokazywane w wyborze funkcji specjalnej. Odznacz funkcje, których instalator nie skonfigurował (np. Okap) - nie da się tego wykryć przez Modbus."
+          "special_functions": "Pokazywane w wyborze funkcji specjalnej, razem z ich ustawieniami. Odznacz funkcje, których instalator nie skonfigurował (np. Okap) - nie da się tego wykryć przez Modbus.",
+          "equipment": "Ustawienia i czujniki odznaczonych pozycji są ukryte. GWC i wymienniki kanałowe są zaznaczane automatycznie, gdy wykryto ich czujniki; ERV i akcesoriów nie da się wykryć przez Modbus."
         }
       }
     }
@@ -64,6 +66,17 @@
         "airing": "Wietrzenie",
         "open_windows": "Otwarte okna",
         "empty_house": "Pusty dom"
+      }
+    },
+    "equipment": {
+      "options": {
+        "gwc": "GWC (gruntowy wymiennik ciepła)",
+        "duct": "Wymienniki kanałowe – nagrzewnica / chłodnica (EKO / KOMFORT)",
+        "erv": "System ERV (nagrzewnica wtórna)",
+        "airs": "Panel AirS",
+        "hygrostat": "Higrostat",
+        "air_quality": "Czujnik jakości powietrza",
+        "airing_switch": "Przełącznik wietrzenia (dzwonkowy / ON-OFF)"
       }
     }
   },

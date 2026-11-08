@@ -199,11 +199,14 @@ OPTIONS = {
   "title": ("Options","Opcje"),
   "data": {"scan_interval": ("Polling interval","Interwał odpytywania"), "timeout": ("Request timeout","Limit czasu zapytania"),
            "request_delay": ("Delay between requests","Opóźnienie między zapytaniami"), "read_only": ("Read-only mode","Tryb tylko do odczytu"),
-           "special_functions": ("Special functions available on the panel","Funkcje specjalne dostępne na panelu")},
+           "special_functions": ("Special functions available on the panel","Funkcje specjalne dostępne na panelu"),
+           "equipment": ("Installed equipment","Wyposażenie centrali")},
   "data_description": {"request_delay": ("Increase for slow or unreliable gateways.","Zwiększ dla wolnych lub niestabilnych bramek."),
                        "read_only": ("Block every write to the device.","Blokuje każdy zapis do centrali."),
-                       "special_functions": ("Shown in the Special function selector. Untick functions your installer has not configured (e.g. Hood) - this cannot be detected over Modbus.",
-                                             "Pokazywane w wyborze funkcji specjalnej. Odznacz funkcje, których instalator nie skonfigurował (np. Okap) - nie da się tego wykryć przez Modbus.")},
+                       "special_functions": ("Shown in the Special function selector, together with their settings. Untick functions your installer has not configured (e.g. Hood) - this cannot be detected over Modbus.",
+                                             "Pokazywane w wyborze funkcji specjalnej, razem z ich ustawieniami. Odznacz funkcje, których instalator nie skonfigurował (np. Okap) - nie da się tego wykryć przez Modbus."),
+                       "equipment": ("Settings and sensors of unticked items are hidden. GWC and duct exchangers are ticked automatically when their sensors are detected; ERV and accessories cannot be detected over Modbus.",
+                                     "Ustawienia i czujniki odznaczonych pozycji są ukryte. GWC i wymienniki kanałowe są zaznaczane automatycznie, gdy wykryto ich czujniki; ERV i akcesoriów nie da się wykryć przez Modbus.")},
  }},
 }
 EXC = {
@@ -229,7 +232,15 @@ def build(i):
                                        "airflow": {"name": ("Airflow","Intensywność")[i]}}}}
     selector = {"special_functions": {"options": {
         "hood": ("Hood","Okap")[i], "fireplace": ("Fireplace","Kominek")[i], "airing": ("Airing","Wietrzenie")[i],
-        "open_windows": ("Open windows","Otwarte okna")[i], "empty_house": ("Empty house","Pusty dom")[i]}}}
+        "open_windows": ("Open windows","Otwarte okna")[i], "empty_house": ("Empty house","Pusty dom")[i]}},
+        "equipment": {"options": {
+        "gwc": ("GWC (ground heat exchanger)","GWC (gruntowy wymiennik ciepła)")[i],
+        "duct": ("Duct heater / cooler (ECO / COMFORT)","Wymienniki kanałowe – nagrzewnica / chłodnica (EKO / KOMFORT)")[i],
+        "erv": ("ERV system (secondary heater)","System ERV (nagrzewnica wtórna)")[i],
+        "airs": ("AirS panel","Panel AirS")[i],
+        "hygrostat": ("Hygrostat","Higrostat")[i],
+        "air_quality": ("Air quality sensor","Czujnik jakości powietrza")[i],
+        "airing_switch": ("Airing switch (bell / on-off)","Przełącznik wietrzenia (dzwonkowy / ON-OFF)")[i]}}}
     return {"config": pick(CONFIG, i), "options": pick(OPTIONS, i), "selector": selector, "entity": ent,
             "exceptions": {k: {"message": v[i]} for k, v in EXC.items()}}
 

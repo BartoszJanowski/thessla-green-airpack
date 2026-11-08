@@ -40,6 +40,43 @@ SPECIAL_FUNCTIONS: Final = {
     "empty_house": 11,
 }
 
+# Entities belonging to each special function: hidden together with the
+# function when it is unticked in Options (keys = entity unique-id suffixes).
+FUNCTION_ENTITIES: Final[dict[str, tuple[str, ...]]] = {
+    "hood": ("hood_supply_coef", "hood_exhaust_coef"),
+    "fireplace": ("fireplace_supply_coef", "fireplace_mode_time"),
+    "airing": ("airing_coef", "airing_panel_mode_time", "manual_airing_time_to_start"),
+    "open_windows": ("open_window_coef",),
+    "empty_house": ("empty_house_coef",),
+}
+
+# Optional equipment and accessories (Options -> Installed equipment).
+# GWC and duct exchangers are detected by their temperature sensors (TZ3 / TN2)
+# and ticked by default when found. ERV registers answer even without the
+# system, and accessories cannot be detected over Modbus: unticked by default.
+CONF_EQUIPMENT: Final = "equipment"
+EQUIPMENT_ENTITIES: Final[dict[str, tuple[str, ...]]] = {
+    "gwc": (
+        "gwc_enabled", "gwc_regen", "gwc_regen_flag", "gwc_state", "gwc_temperature", "gwc_relay",
+        "min_gwc_air_temperature", "max_gwc_air_temperature", "delta_t_gwc", "gwc_regen_period",
+        "start_gwc_regen_winter_time", "stop_gwc_regen_winter_time",
+        "start_gwc_regen_summer_time", "stop_gwc_regen_summer_time",
+    ),
+    "duct": ("comfort_mode_panel", "comfort_state", "required_temperature", "duct_supply_temperature"),
+    "erv": ("post_heater_mode", "post_heater_on"),
+    "airs": (
+        "fan_speed_1_coef", "fan_speed_2_coef", "fan_speed_3_coef",
+        "fan_speed_1_input", "fan_speed_2_input", "fan_speed_3_input", "airing_mini",
+    ),
+    "hygrostat": ("airing_bathroom_coef", "airing_sensor"),
+    "air_quality": ("contamination_coef", "contamination_sensor"),
+    "airing_switch": (
+        "airing_switch_coef", "airing_switch_mode_time",
+        "airing_switch_mode_on_delay", "airing_switch_mode_off_delay", "airing_switch",
+    ),
+}
+EQUIPMENT: Final = tuple(EQUIPMENT_ENTITIES)
+
 MIN_SCAN_INTERVAL: Final = 5
 MAX_SCAN_INTERVAL: Final = 300
 

@@ -9,7 +9,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .client import AirPackError
-from .const import DOMAIN
+from .const import CONF_EQUIPMENT, DOMAIN, EQUIPMENT
 from .coordinator import AirPackConfigEntry, AirPackCoordinator
 from .entity import AirPackEntity, AirPackEntityDescription
 from .registers import FILTER_CHANGE_EXHAUST, FILTER_CHANGE_SUPPLY
@@ -65,12 +65,24 @@ class AirPackRedetectButton(AirPackEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Detect and reload so new / removed entities appear."""
+        coordinator = self.coordinator
+        entry = coordinator.config_entry
+        before = set(coordinator.detected_equipment())
         try:
-            await self.coordinator.async_detect()
+            await coordinator.async_detect()
         except AirPackError as err:
             raise HomeAssistantError(
                 translation_domain=DOMAIN,
                 translation_key="detect_failed",
                 translation_placeholders={"error": str(err)},
             ) from err
-        await self.hass.config_entries.async_reload(self.coordinator.config_entry.entry_id)
+        # Newly detected equipment (GWC, duct exchangers) gets ticked in Options.
+        added = set(coordinator.detected_equipment()) - before
+        if added and CONF_EQUIPMENT in entry.options:
+            ticked = set(entry.options[CONF_EQUIPMENT]) | added
+            self.hass.config_entries.async_update_entry(
+                entry,
+                options={**entry.options, CONF_EQUIPMENT: [e for e in EQUIPMENT if e in ticked]},
+            )  # the options listener reloads the entry
+            return
+        await self.hass.config_entries.async_reload(entry.entry_id)

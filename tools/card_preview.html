@@ -57,19 +57,19 @@ const BASE = {
   "fan.ap": ["ventilation", "on", { percentage: 35, preset_mode: "auto" }],
   "switch.ap_power": ["power", "on"],
   "select.ap_season": ["season_mode", "winter"],
-  "select.ap_comfort": ["comfort_mode_panel", "eco"],
+  // No ECO / COMFORT: hidden when no duct exchangers (Options -> Installed equipment).
 };
 
 const SCENARIOS = [
   ["Your unit at 15:07 (read-only probe)", {}],
   ["Bypass open, summer, free cooling", {
     "binary_sensor.ap_bypass": "on", "sensor.ap_bypass_state": "free_cooling", "select.ap_season": "summer",
-    "sensor.ap_outside": "16.0", "sensor.ap_supply": "16.4", "sensor.ap_extract": "24.6", "sensor.ap_eff": "unknown",
+    "sensor.ap_outside": "16.0", "sensor.ap_supply": "16.4", "sensor.ap_extract": "24.6", "sensor.ap_eff": "unknown", "sensor.ap_rec_power": "0",
     "fan.ap": ["on", { percentage: 60, preset_mode: "manual" }], "sensor.ap_pct_s": "60", "sensor.ap_pct_e": "60",
     "sensor.ap_flow_s": "240", "sensor.ap_flow_e": "240" }],
   ["FPX active, GWC + duct heater fitted, fireplace", {
     "binary_sensor.ap_fpx": "on", "sensor.ap_outside": "-12.5", "sensor.ap_supply": "15.1", "sensor.ap_eff": "79",
-    "sensor.ap_func": "fireplace", "select.ap_comfort": "comfort", "sensor.ap_comfort_state": "heating",
+    "sensor.ap_func": "fireplace", "+select.ap_comfort": ["comfort_mode_panel", "comfort"], "sensor.ap_comfort_state": "heating",
     "fan.ap": ["on", { percentage: 45, preset_mode: "temporary" }], "sensor.ap_pct_s": "54", "sensor.ap_pct_e": "45",
     "+sensor.ap_fpx_t": ["fpx_temperature", "-2.0"], "+sensor.ap_gwc_t": ["gwc_temperature", "4.5"],
     "+sensor.ap_gwc_state": ["gwc_state", "winter"], "+sensor.ap_duct_t": ["duct_supply_temperature", "24.5"],
