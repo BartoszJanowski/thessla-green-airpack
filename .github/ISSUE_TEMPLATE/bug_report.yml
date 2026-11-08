@@ -1,0 +1,61 @@
+name: Bug report / Zgłoszenie błędu
+description: Something does not work as expected / Coś nie działa tak, jak powinno
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please fill in as much as you can. You can write in English or Polish.
+        Dzięki za zgłoszenie! Uzupełnij, co możesz. Możesz pisać po angielsku lub po polsku.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened? / Co się stało?
+      description: What did you expect and what happened instead? / Czego oczekiwałeś, a co się stało?
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: AirPack model / Model centrali
+      placeholder: AirPack4 400v Energy++
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Unit firmware / Oprogramowanie centrali
+      description: Device page → Firmware / Strona urządzenia → Oprogramowanie
+      placeholder: 4.87.2
+  - type: input
+    id: integration_version
+    attributes:
+      label: Integration version / Wersja integracji
+      placeholder: 0.1.7
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version / Wersja Home Assistanta
+      placeholder: "2026.11.0"
+    validations:
+      required: true
+  - type: input
+    id: gateway
+    attributes:
+      label: Modbus gateway / Bramka Modbus
+      placeholder: Elfin EW11, port 8899
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics / Diagnostyka
+      description: |
+        Device page → ⋮ → Download diagnostics, then drag the file here. It does not contain your IP address or serial number.
+        Strona urządzenia → ⋮ → Pobierz diagnostykę, potem przeciągnij plik tutaj. Nie zawiera adresu IP ani numeru seryjnego.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Logi
+      description: Settings → System → Logs, filter "thessla" / Ustawienia → System → Dzienniki, filtr "thessla"
+      render: text

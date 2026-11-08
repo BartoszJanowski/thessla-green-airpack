@@ -270,6 +270,9 @@ async def test_diagnostics(hass: HomeAssistant, fake) -> None:
     assert diag["entry"]["data"]["host"] == "**REDACTED**"
     assert "post_heater_mode" not in diag["capabilities"]["supported"]
     assert diag["raw"]["input:16"] == 0
+    # No serial number anywhere (README promises this).
+    assert all(diag["raw"][f"input:{a}"] == "**REDACTED**" for a in range(0x18, 0x1E))
+    assert "1a2b" not in str(diag) and "3c4d" not in str(diag)
 
 
 async def test_unload(hass: HomeAssistant, fake) -> None:

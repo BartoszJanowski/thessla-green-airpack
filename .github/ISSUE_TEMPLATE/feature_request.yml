@@ -1,0 +1,16 @@
+name: Feature request / Propozycja funkcji
+description: Suggest an improvement / Zaproponuj usprawnienie
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like? / Czego potrzebujesz?
+      description: Describe the feature and why it is useful. / Opisz funkcję i do czego się przyda.
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: AirPack model / Model centrali
+      placeholder: AirPack4 400v Energy++

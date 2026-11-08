@@ -11,6 +11,8 @@ from homeassistant.core import HomeAssistant
 from .coordinator import AirPackConfigEntry
 
 TO_REDACT = {CONF_HOST, "serial", "serial_number"}
+# Raw registers that hold the controller serial number (input 0x18-0x1D).
+SERIAL_RAW_KEYS = {f"input:{address}" for address in range(0x18, 0x1E)}
 
 
 async def async_get_config_entry_diagnostics(
@@ -28,5 +30,8 @@ async def async_get_config_entry_diagnostics(
         "capabilities": async_redact_data(coordinator.capabilities.as_dict(), TO_REDACT),
         "failed_keys": sorted(coordinator.failed_keys),
         "data": data,
-        "raw": dict(sorted(coordinator.raw.items())),
+        "raw": {
+            key: ("**REDACTED**" if key in SERIAL_RAW_KEYS else value)
+            for key, value in sorted(coordinator.raw.items())
+        },
     }
