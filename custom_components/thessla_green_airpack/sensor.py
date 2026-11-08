@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 from homeassistant.components.sensor import (
@@ -16,13 +17,17 @@ from homeassistant.const import (
     PERCENTAGE,
     EntityCategory,
     UnitOfElectricPotential,
+    UnitOfEnergy,
+    UnitOfPower,
     UnitOfTemperature,
     UnitOfVolumeFlowRate,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.util import dt as dt_util
 
-from .coordinator import KEY_ACTIVE_ALARMS, KEY_EFFICIENCY, AirPackConfigEntry
+from . import energy
+from .coordinator import KEY_ACTIVE_ALARMS, KEY_EFFICIENCY, KEY_RECOVERY_POWER, AirPackConfigEntry
 from .entity import AirPackEntity, AirPackEntityDescription, supported_descriptions
 from .registers import ALARM_DESCRIPTIONS
 
@@ -54,6 +59,7 @@ class AirPackSensorDescription(AirPackEntityDescription, SensorEntityDescription
 
     value_fn: Callable[[Any], Any] | None = None
     attrs_fn: Callable[[Any], dict[str, Any]] | None = None
+    last_reset_fn: Callable[[datetime], datetime] | None = None
 
 
 def _temp(key: str, **kw) -> AirPackSensorDescription:
@@ -97,6 +103,34 @@ def _percent(key: str, **kw) -> AirPackSensorDescription:
     )
 
 
+def _start_of_day(now: datetime) -> datetime:
+    return dt_util.start_of_local_day(now)
+
+
+def _start_of_month(now: datetime) -> datetime:
+    return dt_util.start_of_local_day(now.date().replace(day=1))
+
+
+def _start_of_year(now: datetime) -> datetime:
+    return dt_util.start_of_local_day(now.date().replace(month=1, day=1))
+
+
+def _energy(key: str, state_class: SensorStateClass | None = None, **kw) -> AirPackSensorDescription:
+    """Recovered heat, kWh.
+
+    Lifetime total: TOTAL_INCREASING (long-term statistics). Calendar periods:
+    TOTAL with last_reset. Rolling windows go up and down, so no state class.
+    """
+    return AirPackSensorDescription(
+        key=key,
+        device_class=SensorDeviceClass.ENERGY,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        state_class=state_class,
+        suggested_display_precision=2,
+        **kw,
+    )
+
+
 def _volt(key: str) -> AirPackSensorDescription:
     return AirPackSensorDescription(
         key=key,
@@ -129,6 +163,20 @@ SENSORS: tuple[AirPackSensorDescription, ...] = (
     _percent("supply_filter_wear"),
     _percent("exhaust_filter_wear"),
     _percent(KEY_EFFICIENCY, suggested_display_precision=0),
+    AirPackSensorDescription(
+        key=KEY_RECOVERY_POWER,
+        device_class=SensorDeviceClass.POWER,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        state_class=SensorStateClass.MEASUREMENT,
+        suggested_display_precision=0,
+    ),
+    _energy(energy.TOTAL, SensorStateClass.TOTAL_INCREASING),
+    _energy(energy.TODAY, SensorStateClass.TOTAL, last_reset_fn=_start_of_day),
+    _energy(energy.THIS_MONTH, SensorStateClass.TOTAL, last_reset_fn=_start_of_month),
+    _energy(energy.THIS_YEAR, SensorStateClass.TOTAL, last_reset_fn=_start_of_year),
+    _energy(energy.LAST_24H),
+    _energy(energy.LAST_30_DAYS),
+    _energy(energy.LAST_12_MONTHS),
     AirPackSensorDescription(key="supply_filter_date", device_class=SensorDeviceClass.DATE),
     AirPackSensorDescription(key="exhaust_filter_date", device_class=SensorDeviceClass.DATE),
     _enum("operating_mode", "mode", OPERATING_MODES),
@@ -199,6 +247,17 @@ class AirPackSensor(AirPackEntity, SensorEntity):
         """Extra attributes."""
         if self.entity_description.attrs_fn:
             return self.entity_description.attrs_fn(self.value)
+        return None
+
+    @property
+    def last_reset(self) -> datetime | None:
+        """Start of the current calendar period (period energy sensors)."""
+        if self.entity_description.last_reset_fn:
+            # Time of the values, not "now": right after midnight the value
+            # still belongs to yesterday until the next poll.
+            at = (self.coordinator.data or {}).get(energy.VALUES_TIME)
+            if at is not None:
+                return self.entity_description.last_reset_fn(at)
         return None
 
 

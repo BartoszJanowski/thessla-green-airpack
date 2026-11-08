@@ -91,6 +91,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> 
     """Unload a config entry."""
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
+        await entry.runtime_data.async_save_energy()
         await entry.runtime_data.client.close()
         others = [
             e for e in hass.config_entries.async_loaded_entries(DOMAIN) if e.entry_id != entry.entry_id
@@ -101,9 +102,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> 
 
 
 async def async_remove_entry(hass: HomeAssistant, entry: AirPackConfigEntry) -> None:
-    """Delete cached capabilities when the entry is removed."""
+    """Delete cached capabilities and energy statistics when the entry is removed."""
     from homeassistant.helpers.storage import Store
 
     from .const import STORAGE_VERSION
 
-    await Store(hass, STORAGE_VERSION, f"{DOMAIN}.{entry.entry_id}").async_remove()
+    for suffix in ("", ".energy"):
+        await Store(hass, STORAGE_VERSION, f"{DOMAIN}.{entry.entry_id}{suffix}").async_remove()

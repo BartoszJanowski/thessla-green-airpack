@@ -14,6 +14,7 @@ from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util import dt as dt_util
 
 from .client import (
     AirPackClient,
@@ -45,6 +46,7 @@ from .decode import (
     module_version,
     serial_string,
 )
+from .energy import ENERGY_KEYS, VALUES_TIME, RecoveredEnergy, heat_recovery_power
 from .models import Family, family_for_model, model_name
 from .planner import Block, detect_blocks
 from .registers import (
@@ -66,10 +68,19 @@ MODE_AUTO, MODE_MANUAL, MODE_TEMPORARY = 0, 1, 2
 # Computed (virtual) keys
 KEY_EFFICIENCY = "heat_recovery_efficiency"
 KEY_ACTIVE_ALARMS = "active_alarms"
-COMPUTED_DEPENDENCIES: dict[str, tuple[str, ...]] = {
+KEY_RECOVERY_POWER = "heat_recovery_power"
+# A nested tuple means "any of these".
+COMPUTED_DEPENDENCIES: dict[str, tuple[str | tuple[str, ...], ...]] = {
     KEY_EFFICIENCY: ("outside_temperature", "supply_temperature", "exhaust_temperature"),
     KEY_ACTIVE_ALARMS: ("alarm", "error"),
+    KEY_RECOVERY_POWER: (
+        "outside_temperature",
+        "supply_temperature",
+        ("supply_air_flow", "supply_flowrate"),
+    ),
+    **{key: (KEY_RECOVERY_POWER,) for key in ENERGY_KEYS},
 }
+ENERGY_SAVE_DELAY = 120  # s; also flushed when Home Assistant stops
 
 
 @dataclass
@@ -133,6 +144,14 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
         self._poll_count = 0
         self._failed_blocks: set[Block] = set()
+        self.energy = RecoveredEnergy(max_gap=self._energy_max_gap())
+        self._energy_store: Store[dict[str, Any]] = Store(
+            hass, STORAGE_VERSION, f"{DOMAIN}.{entry.entry_id}.energy"
+        )
+
+    def _energy_max_gap(self) -> timedelta:
+        """Longest pause between polls that is still integrated."""
+        return max(timedelta(minutes=10), 3 * (self.update_interval or timedelta(0)))
 
     # -- identity --------------------------------------------------------------
 
@@ -163,7 +182,10 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def is_supported(self, key: str) -> bool:
         """True if the device has this register (or all inputs of a computed value)."""
         if key in COMPUTED_DEPENDENCIES:
-            return all(dep in self.capabilities.supported for dep in COMPUTED_DEPENDENCIES[key])
+            return all(
+                any(self.is_supported(d) for d in dep) if isinstance(dep, tuple) else self.is_supported(dep)
+                for dep in COMPUTED_DEPENDENCIES[key]
+            )
         return key in self.capabilities.supported and key not in self.capabilities.absent
 
     def feature_present(self, feature: Feature | None) -> bool:
@@ -174,6 +196,12 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _async_setup(self) -> None:
         """Load cached capabilities, or detect them (first run)."""
+        stored_energy = await self._energy_store.async_load()
+        if stored_energy:
+            try:
+                self.energy = RecoveredEnergy.from_dict(stored_energy, self._energy_max_gap())
+            except (TypeError, ValueError) as err:
+                _LOGGER.warning("Ignoring invalid stored energy statistics: %s", err)
         stored = await self._store.async_load()
         if stored:
             try:
@@ -378,6 +406,23 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             for code in ALARM_DESCRIPTIONS
             if data.get(f"alarm_{code.lower()}")
         ]
+        if self.is_supported(KEY_RECOVERY_POWER):
+            flow = data.get("supply_air_flow")
+            if flow is None:
+                flow = data.get("supply_flowrate")
+            power = heat_recovery_power(
+                flow,
+                data.get("outside_temperature"),
+                data.get("supply_temperature"),
+                bypass_open,
+                data.get("on_off_panel_mode"),
+            )
+            data[KEY_RECOVERY_POWER] = power
+            now = dt_util.now()
+            self.energy.add_sample(now, power)
+            data.update(self.energy.values(now))
+            data[VALUES_TIME] = now
+            self._energy_store.async_delay_save(self.energy.as_dict, ENERGY_SAVE_DELAY)
 
     # -- writes ----------------------------------------------------------------
 
@@ -478,6 +523,10 @@ class AirPackCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     async def async_remove_store(self) -> None:
         """Delete persisted capabilities."""
         await self._store.async_remove()
+
+    async def async_save_energy(self) -> None:
+        """Persist energy statistics now (unload/reload)."""
+        await self._energy_store.async_save(self.energy.as_dict())
 
     @property
     def connection_label(self) -> str:

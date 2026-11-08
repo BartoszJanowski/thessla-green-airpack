@@ -10,7 +10,7 @@
  * does not break the card. Anything the device does not have is hidden.
  */
 
-const CARD_VERSION = "1.0.1";
+const CARD_VERSION = "1.1.0";
 const DOMAIN = "thessla_green_airpack";
 
 const I18N = {
@@ -18,7 +18,7 @@ const I18N = {
     intake: "INTAKE", extract: "EXTRACT", supply: "SUPPLY", exhaust: "EXHAUST",
     bypass: "BYPASS", off: "Off", auto: "Auto", manual: "Manual", temporary: "Temporary",
     summer: "Summer", winter: "Winter", eco: "ECO", comfort: "COMFORT", alarms: "alarm(s)",
-    efficiency: "Efficiency", no_device: "No Thessla Green AirPack4 found.",
+    efficiency: "Efficiency", today: "today", no_device: "No Thessla Green AirPack4 found.",
     functions: {
       hood: "Hood", fireplace: "Fireplace", airing_bell_switch: "Airing", airing_switch: "Airing",
       airing_hygrostat: "Airing (H2O)", airing_air_quality: "Airing (air quality)", airing_manual: "Airing",
@@ -30,7 +30,7 @@ const I18N = {
     intake: "CZERPNIA", extract: "WYWIEW", supply: "NAWIEW", exhaust: "WYRZUTNIA",
     bypass: "BYPASS", off: "Wyłączona", auto: "Automatyczny", manual: "Manualny", temporary: "Chwilowy",
     summer: "Lato", winter: "Zima", eco: "EKO", comfort: "KOMFORT", alarms: "alarm(y)",
-    efficiency: "Sprawność", no_device: "Nie znaleziono centrali Thessla Green AirPack4.",
+    efficiency: "Sprawność", today: "dziś", no_device: "Nie znaleziono centrali Thessla Green AirPack4.",
     functions: {
       hood: "Okap", fireplace: "Kominek", airing_bell_switch: "Wietrzenie", airing_switch: "Wietrzenie",
       airing_hygrostat: "Wietrzenie (H2O)", airing_air_quality: "Wietrzenie (JP)", airing_manual: "Wietrzenie",
@@ -56,6 +56,8 @@ const ROLES = {
   filterSupply: "sensor.supply_filter_wear",
   filterExhaust: "sensor.exhaust_filter_wear",
   efficiency: "sensor.heat_recovery_efficiency",
+  recPower: "sensor.heat_recovery_power",
+  recToday: "sensor.heat_recovery_energy_today",
   func: "sensor.active_function",
   bypassState: "sensor.bypass_state",
   gwcState: "sensor.gwc_state",
@@ -112,6 +114,10 @@ const SVG = `
     <text id="hxLabel" class="big" x="450" y="256" text-anchor="middle"></text>
     <text id="hxSub" class="small" x="450" y="282" text-anchor="middle"></text>
   </g>
+
+  <!-- recovered heat: power now + energy today -->
+  <text id="recPower" class="mid clickable" x="450" y="370" text-anchor="middle"></text>
+  <text id="recToday" class="small clickable" x="450" y="394" text-anchor="middle"></text>
 
   <!-- temperatures -->
   <text id="tOutside" class="temp clickable" x="20" y="95"></text>
@@ -493,6 +499,16 @@ class ThesslaAirPackCard extends HTMLElement {
     $("hx").dataset.entity = this._map.efficiency || this._map.bypassState || "";
     $("hxLabel").textContent = bypassOpen ? t.bypass : eff !== null ? `${Math.round(eff)} %` : "";
     $("hxSub").textContent = !bypassOpen && eff !== null ? t.efficiency : "";
+
+    // Recovered heat
+    const lang = this._hass.locale?.language || this._hass.language || "en";
+    const fmtNum = (v, digits) => v.toLocaleString(lang, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    const recPower = this._num("recPower");
+    const recToday = this._num("recToday");
+    this._show("recPower", Boolean(this._map.recPower));
+    this._show("recToday", Boolean(this._map.recToday));
+    this._text("recPower", recPower === null ? "— W" : `${fmtNum(recPower, 0)} W`, "recPower");
+    this._text("recToday", recToday === null ? "" : `${t.today} ${fmtNum(recToday, 1)} kWh`, "recToday");
   }
 
   _duct(id, color, pct, dim) {

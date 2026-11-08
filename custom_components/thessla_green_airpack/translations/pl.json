@@ -126,6 +126,30 @@
       "heat_recovery_efficiency": {
         "name": "Sprawność odzysku ciepła"
       },
+      "heat_recovery_power": {
+        "name": "Odzysk ciepła – moc"
+      },
+      "heat_recovery_energy_total": {
+        "name": "Odzysk ciepła – całkowity"
+      },
+      "heat_recovery_energy_today": {
+        "name": "Odzysk ciepła – dzisiaj"
+      },
+      "heat_recovery_energy_last_24h": {
+        "name": "Odzysk ciepła – ostatnie 24 h"
+      },
+      "heat_recovery_energy_last_30_days": {
+        "name": "Odzysk ciepła – ostatnie 30 dni"
+      },
+      "heat_recovery_energy_this_month": {
+        "name": "Odzysk ciepła – ten miesiąc"
+      },
+      "heat_recovery_energy_last_12_months": {
+        "name": "Odzysk ciepła – ostatnie 12 miesięcy"
+      },
+      "heat_recovery_energy_this_year": {
+        "name": "Odzysk ciepła – ten rok"
+      },
       "supply_filter_date": {
         "name": "Termin wymiany filtra nawiewnego"
       },

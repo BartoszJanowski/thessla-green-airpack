@@ -22,6 +22,7 @@ An unofficial Home Assistant integration for **Thessla Green AirPack4** heat-rec
   - Sensors that aren't fitted are hidden.
   - A value the unit can't read right now shows *Unknown* instead of an error.
 - **Live flow diagram:** shown in an **AirPack4** sidebar panel and as a dashboard card, similar to the Air++ unit screen. It shows temperatures, airflow, fans, filters, FPX, GWC, the duct heater and the bypass.
+- **Heat recovery:** exchanger efficiency, recovered heat power and energy statistics (today, this month, this year, last 24 h / 30 days / 12 months, total).
 - **Diagnostics:** alarms with descriptions, filter wear and replacement dates, a read-only mode, and diagnostics download.
 - **Languages:** English and Polish.
 
@@ -170,8 +171,31 @@ Entity order on the device page is alphabetical. That is how Home Assistant work
 What the diagram shows:
 - Each air path with temperature, fan intensity, airflow and filter wear.
 - When the **bypass** opens, the exchanger fades and shows *BYPASS*, and supply air is drawn along the bypass path.
+- Under the exchanger: the heat recovery power now and the energy recovered today.
 - FPX, GWC and the duct heater appear only if your unit has them.
 - Tapping an element opens its entity.
+
+#### Heat recovery
+
+**Heat recovery – power** is the heat the exchanger passes to the fresh air:
+
+> P [W] = supply airflow [m³/h] × 0.335 × (supply temperature TN1 − intake temperature TZ1)
+
+- Only heating counts. An open bypass, a stopped unit, or supply air no warmer than outside air gives 0 W.
+- Airflow is the measured value (Constant Flow). Units without it use the target airflow.
+- It is calculated from the unit's own sensors (about ±0.5 °C), so treat it as a good approximation, not a heat meter. Heat from the supply fan motor raises the result by a few tens of watts.
+
+The **Heat recovery – …** energy sensors (kWh) add it up every poll:
+
+| Sensor | Period |
+|---|---|
+| total | since the integration was installed, never decreases |
+| today / this month / this year | calendar periods, reset at midnight, on the 1st, on 1 January |
+| last 24 h / last 30 days / last 12 months | rolling windows: the current hour, day or month plus the previous 23 hours, 29 days or 11 months |
+
+- Statistics are saved and survive restarts.
+- Time when Home Assistant was not running, or the unit did not respond for over 10 minutes, is not counted.
+- For bar charts by day, week or month, add a **Statistics graph** card with *Heat recovery – total* and choose the period and *Change*.
 
 ### 7. Updating
 
@@ -236,6 +260,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements_test.txt
   - Niezamontowane czujniki są ukrywane.
   - Chwilowo nieodczytana wartość pokazuje się jako *Nieznany* zamiast błędu.
 - **Schemat pracy na żywo:** w panelu **AirPack4** w menu bocznym i jako karta na pulpit, podobny do ekranu Air++. Pokazuje temperatury, przepływy, wentylatory, filtry, FPX, GWC, nagrzewnicę i bypass.
+- **Odzysk ciepła:** sprawność wymiennika, moc odzysku i statystyki odzyskanej energii (dzisiaj, ten miesiąc, ten rok, ostatnie 24 h / 30 dni / 12 miesięcy, całkowity).
 - **Diagnostyka:** alarmy z opisami, zużycie i terminy wymiany filtrów, tryb tylko do odczytu i pobieranie diagnostyki.
 - **Języki:** polski i angielski.
 
@@ -384,8 +409,31 @@ Kolejność encji na stronie urządzenia jest alfabetyczna. Tak działa Home Ass
 Co pokazuje schemat:
 - Każdą ścieżkę powietrza z temperaturą, intensywnością wentylatora, przepływem i zużyciem filtra.
 - Gdy otworzy się **bypass**, wymiennik przygasa i pokazuje *BYPASS*, a nawiew płynie linią bypassu.
+- Pod wymiennikiem: moc odzysku ciepła teraz i energię odzyskaną dzisiaj.
 - FPX, GWC i nagrzewnica pojawiają się tylko wtedy, gdy centrala je ma.
 - Kliknięcie elementu otwiera jego encję.
+
+#### Odzysk ciepła
+
+**Odzysk ciepła – moc** to ciepło, które wymiennik przekazuje świeżemu powietrzu:
+
+> P [W] = przepływ nawiewu [m³/h] × 0,335 × (temperatura nawiewu TN1 − temperatura czerpni TZ1)
+
+- Liczone jest tylko grzanie. Otwarty bypass, wyłączona centrala albo nawiew nie cieplejszy niż powietrze zewnętrzne dają 0 W.
+- Przepływ to wartość zmierzona (Constant Flow). Centrale bez niej używają przepływu zadanego.
+- Wynik pochodzi z czujników centrali (ok. ±0,5 °C), więc to dobre przybliżenie, a nie ciepłomierz. Ciepło silnika wentylatora nawiewnego zawyża wynik o kilkadziesiąt watów.
+
+Czujniki energii **Odzysk ciepła – …** (kWh) sumują ją przy każdym odczycie:
+
+| Czujnik | Okres |
+|---|---|
+| całkowity | od instalacji integracji, nigdy nie maleje |
+| dzisiaj / ten miesiąc / ten rok | okresy kalendarzowe, zerowane o północy, 1. dnia miesiąca i 1 stycznia |
+| ostatnie 24 h / 30 dni / 12 miesięcy | okna kroczące: bieżąca godzina, dzień lub miesiąc plus poprzednie 23 godziny, 29 dni lub 11 miesięcy |
+
+- Statystyki są zapisywane i przetrwają restart.
+- Czas, gdy Home Assistant nie działał albo centrala nie odpowiadała dłużej niż 10 minut, nie jest liczony.
+- Wykres słupkowy dzienny, tygodniowy lub miesięczny: dodaj kartę **Wykres statystyk** z encją *Odzysk ciepła – całkowity*, wybierz okres i *Zmiana*.
 
 ### 7. Aktualizacja
 

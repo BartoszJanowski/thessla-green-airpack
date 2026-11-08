@@ -126,6 +126,30 @@
       "heat_recovery_efficiency": {
         "name": "Heat recovery efficiency"
       },
+      "heat_recovery_power": {
+        "name": "Heat recovery – power"
+      },
+      "heat_recovery_energy_total": {
+        "name": "Heat recovery – total"
+      },
+      "heat_recovery_energy_today": {
+        "name": "Heat recovery – today"
+      },
+      "heat_recovery_energy_last_24h": {
+        "name": "Heat recovery – last 24 h"
+      },
+      "heat_recovery_energy_last_30_days": {
+        "name": "Heat recovery – last 30 days"
+      },
+      "heat_recovery_energy_this_month": {
+        "name": "Heat recovery – this month"
+      },
+      "heat_recovery_energy_last_12_months": {
+        "name": "Heat recovery – last 12 months"
+      },
+      "heat_recovery_energy_this_year": {
+        "name": "Heat recovery – this year"
+      },
       "supply_filter_date": {
         "name": "Supply filter replacement due"
       },
