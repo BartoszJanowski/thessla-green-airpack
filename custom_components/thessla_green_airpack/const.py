@@ -62,7 +62,11 @@ EQUIPMENT_ENTITIES: Final[dict[str, tuple[str, ...]]] = {
         "start_gwc_regen_winter_time", "stop_gwc_regen_winter_time",
         "start_gwc_regen_summer_time", "stop_gwc_regen_summer_time",
     ),
-    "duct": ("comfort_mode_panel", "comfort_state", "required_temperature", "duct_supply_temperature"),
+    # Supply temperature setpoints are only kept in COMFORT, i.e. by duct exchangers.
+    "duct": (
+        "comfort_mode_panel", "comfort_state", "required_temperature", "duct_supply_temperature",
+        "supply_air_temperature_manual", "supply_air_temperature_temporary",
+    ),
     "erv": ("post_heater_mode", "post_heater_on"),
     "airs": (
         "fan_speed_1_coef", "fan_speed_2_coef", "fan_speed_3_coef",

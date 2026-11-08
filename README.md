@@ -134,7 +134,7 @@ What each item hides when it is unticked:
 | *Open windows* (special function) | open windows exhaust intensity | ticked |
 | *Empty house* (special function) | empty house intensity | ticked |
 | **GWC** | GWC switch, regeneration, thresholds, times, state, temperature, relay | ticked when the GWC sensor (TZ3) is detected |
-| **Duct heater / cooler (ECO / COMFORT)** | ECO / COMFORT, COMFORT state, COMFORT target temperature, duct supply temperature (TN2) | ticked when the TN2 sensor is detected |
+| **Duct heater / cooler (ECO / COMFORT)** | ECO / COMFORT, COMFORT state, COMFORT target temperature, duct supply temperature (TN2), manual and temporary supply temperature | ticked when the TN2 sensor is detected |
 | **ERV system** | ERV heater mode, ERV post-heater | unticked: its registers answer even without the system |
 | **AirS panel** | AirS gear 1–3 intensity, AirS inputs | unticked (accessory) |
 | **Hygrostat** | bathroom airing intensity, humidity input | unticked (accessory) |
@@ -169,7 +169,7 @@ Other controls:
 - **ERV:** a separate system with a secondary heater and its own modes (1 – economical, 2 – comfort), set on the Air++ panel under *Settings → ERV*. Its registers answer even on units without it, so tick *ERV system* in Options only if your Air++ panel has the ERV tab.
 
 Under **Configuration** (device page):
-- per-mode airflow and supply temperature. The *Temporary* ones are hidden by default because the Ventilation entity handles them.
+- per-mode airflow and supply temperature. The *Temporary* ones are hidden by default because the Ventilation entity handles them. Supply temperatures are kept only in COMFORT, so they are shown only with duct exchangers.
 - bypass and GWC on/off and their parameters,
 - special-function intensities and durations,
 - AirS gears and accessory settings (when ticked in Options),
@@ -397,7 +397,7 @@ Co ukrywa każda odznaczona pozycja:
 | *Otwarte okna* (funkcja specjalna) | OTWARTE OKNA – intensywność wywiewu | zaznaczona |
 | *Pusty dom* (funkcja specjalna) | PUSTY DOM – intensywność | zaznaczona |
 | **GWC** | GWC aktywny, regeneracja, progi, godziny, stan, temperatura, przekaźnik | zaznaczona, gdy wykryto czujnik GWC (TZ3) |
-| **Wymienniki kanałowe (EKO / KOMFORT)** | EKO / KOMFORT, stan trybu KOMFORT, temperatura zadana KOMFORT, temperatura za nagrzewnicą kanałową (TN2) | zaznaczona, gdy wykryto czujnik TN2 |
+| **Wymienniki kanałowe (EKO / KOMFORT)** | EKO / KOMFORT, stan trybu KOMFORT, temperatura zadana KOMFORT, temperatura za nagrzewnicą kanałową (TN2), temperatura nawiewu w trybie manualnym i chwilowym | zaznaczona, gdy wykryto czujnik TN2 |
 | **System ERV** | tryb nagrzewnicy ERV, nagrzewnica wtórna ERV | odznaczona: rejestry ERV odpowiadają także bez systemu |
 | **Panel AirS** | AirS – intensywność biegów 1–3, wejścia AirS | odznaczona (akcesorium) |
 | **Higrostat** | WIETRZENIE (łazienka) – intensywność, wejście czujnika wilgotności | odznaczona (akcesorium) |
@@ -432,7 +432,7 @@ Pozostałe kontrolki:
 - **ERV:** osobny system z nagrzewnicą wtórną i własnymi trybami (1 – ekonomiczny, 2 – komfortowy), ustawiany w Air++ w *Ustawienia → Nastawy → ERV*. Rejestry ERV odpowiadają także w centralach bez tego systemu, więc zaznacz *System ERV* w Opcjach tylko wtedy, gdy Twój panel Air++ ma zakładkę ERV.
 
 W sekcji **Konfiguracja** (strona urządzenia):
-- intensywność i temperatura nawiewu dla trybów. Nastawy trybu *chwilowego* są domyślnie ukryte, bo obsługuje je encja Wentylacja.
+- intensywność i temperatura nawiewu dla trybów. Nastawy trybu *chwilowego* są domyślnie ukryte, bo obsługuje je encja Wentylacja. Temperatura nawiewu jest utrzymywana tylko w trybie KOMFORT, więc widać ją tylko przy wymiennikach kanałowych.
 - włączanie bypassu i GWC oraz ich parametry,
 - intensywności i czasy funkcji specjalnych,
 - biegi AirS i ustawienia akcesoriów (gdy są zaznaczone w Opcjach),

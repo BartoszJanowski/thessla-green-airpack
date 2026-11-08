@@ -65,6 +65,8 @@ async def test_defaults_without_detected_equipment(hass: HomeAssistant, fake) ->
     assert _disabled_by(hass, "select", "comfort_mode_panel") is INTEGRATION
     assert _disabled_by(hass, "sensor", "comfort_state") is INTEGRATION
     assert _disabled_by(hass, "sensor", "required_temperature") is INTEGRATION
+    assert _disabled_by(hass, "number", "supply_air_temperature_manual") is INTEGRATION
+    assert _disabled_by(hass, "number", "supply_air_temperature_temporary") is INTEGRATION
     assert _disabled_by(hass, "select", "post_heater_mode") is INTEGRATION
     assert _disabled_by(hass, "binary_sensor", "post_heater_on") is INTEGRATION
     assert _disabled_by(hass, "number", "fan_speed_1_coef") is INTEGRATION
@@ -82,6 +84,9 @@ async def test_detected_duct_exchangers_shown(hass: HomeAssistant, fake) -> None
     assert entry.runtime_data.equipment == ["duct"]
     assert _disabled_by(hass, "select", "comfort_mode_panel") is None
     assert _disabled_by(hass, "sensor", "duct_supply_temperature") is None
+    assert _disabled_by(hass, "number", "supply_air_temperature_manual") is None
+    # Temporary setpoint stays hidden by default (the Ventilation entity handles it).
+    assert _disabled_by(hass, "number", "supply_air_temperature_temporary") is INTEGRATION
 
 
 async def test_options_hide_and_show_groups(hass: HomeAssistant, fake) -> None:

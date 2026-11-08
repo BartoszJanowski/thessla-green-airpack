@@ -179,6 +179,7 @@ async def test_preset_modes(hass: HomeAssistant, fake) -> None:
 
 
 async def test_select_switch_number_time_writes(hass: HomeAssistant, fake) -> None:
+    fake.bank[Table.INPUT][0x14] = 215  # duct exchangers (TN2): supply temperature settings shown
     await setup_entry(hass)
     await hass.services.async_call(
         "select", "select_option",
