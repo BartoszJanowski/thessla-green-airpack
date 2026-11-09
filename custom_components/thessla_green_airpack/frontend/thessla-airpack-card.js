@@ -10,7 +10,7 @@
  * does not break the card. Anything the device does not have is hidden.
  */
 
-const CARD_VERSION = "1.2.3";
+const CARD_VERSION = "1.2.4";
 const DOMAIN = "thessla_green_airpack";
 
 const I18N = {
@@ -211,7 +211,10 @@ const STYLE = `
   #hx.dim #hxPoly { opacity: .25; }
   .fanring { fill: none; stroke: var(--secondary-text-color); stroke-width: 3; }
   .blades path { fill: var(--secondary-text-color); }
-  .blades { transform-box: fill-box; transform-origin: center; }
+  /* Rotate about the hub, not the blades' bounding box (3 blades are not symmetric). */
+  .blades { transform-box: view-box; }
+  #bladesSupply { transform-origin: 290px 120px; }
+  #bladesExhaust { transform-origin: 640px 120px; }
   .blades.spin { animation: tg-spin linear infinite; }
   .filter { fill: none; stroke: var(--secondary-text-color); stroke-width: 2.5; stroke-linejoin: round; }
   .comp rect { fill: none; stroke: var(--secondary-text-color); stroke-width: 2; opacity: .5; transition: all .4s; }
